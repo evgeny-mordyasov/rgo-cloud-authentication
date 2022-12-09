@@ -1,0 +1,3 @@
+module-properties:
+  token:
+    lifetimeHours: 1
