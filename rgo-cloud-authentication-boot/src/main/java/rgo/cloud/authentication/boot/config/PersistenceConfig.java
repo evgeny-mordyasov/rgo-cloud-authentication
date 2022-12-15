@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import rgo.cloud.authentication.boot.config.properties.DbProperties;
-import rgo.cloud.authentication.boot.config.properties.TokenProperties;
 import rgo.cloud.authentication.boot.storage.ClientRepository;
 import rgo.cloud.authentication.boot.storage.ConfirmationTokenRepository;
 import rgo.cloud.authentication.boot.storage.DbTxManager;
@@ -52,7 +51,7 @@ public class PersistenceConfig {
     }
 
     @Bean
-    public ConfirmationTokenRepository confirmationTokenRepository(DbTxManager dbTxManager, TokenProperties config) {
-        return new ConfirmationTokenRepository(dbTxManager, config);
+    public ConfirmationTokenRepository confirmationTokenRepository(DbTxManager dbTxManager) {
+        return new ConfirmationTokenRepository(dbTxManager);
     }
 }

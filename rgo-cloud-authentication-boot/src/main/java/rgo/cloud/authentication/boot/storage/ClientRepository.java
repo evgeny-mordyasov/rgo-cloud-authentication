@@ -45,6 +45,10 @@ public class ClientRepository {
                 jdbc.query(ClientQuery.findByMail(), params, mapper)));
     }
 
+    public boolean exists(Long entityId) {
+        return findById(entityId).isPresent();
+    }
+
     private Optional<Client> first(List<Client> list) {
         if (list.isEmpty()) {
             log.info("The client not found.");
@@ -92,10 +96,8 @@ public class ClientRepository {
                 "surname", client.getSurname(),
                 "name", client.getName(),
                 "patronymic", client.getPatronymic(),
-                "mail", client.getMail(),
                 "password", client.getPassword(),
-                "lmd", LocalDateTime.now(ZoneOffset.UTC),
-                "active", client.isActive()));
+                "lmd", LocalDateTime.now(ZoneOffset.UTC)));
 
         return tx.tx(() -> {
             jdbc.update(ClientQuery.update(), params);

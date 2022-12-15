@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
 import static rgo.cloud.authentication.boot.TestCommonUtil.*;
 
 @SpringBootTest
@@ -147,7 +148,7 @@ public class ClientRepositoryTest {
                 .surname(randomString())
                 .name(randomString())
                 .patronymic(randomString())
-                .mail(randomString())
+                .mail(saved.getMail())
                 .password(randomString())
                 .build();
 
@@ -178,15 +179,5 @@ public class ClientRepositoryTest {
         assertEquals(updated.getPassword(), updated.getPassword());
         assertTrue(updated.isActive());
         assertEquals(saved.getRole(), updated.getRole());
-    }
-
-    private static Client createRandomClient() {
-        return Client.builder()
-                .surname(randomString())
-                .name(randomString())
-                .patronymic(randomString())
-                .mail(randomString())
-                .password(randomString())
-                .build();
     }
 }

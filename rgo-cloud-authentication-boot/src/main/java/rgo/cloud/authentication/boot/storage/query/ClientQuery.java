@@ -23,14 +23,12 @@ public final class ClientQuery {
     }
 
     public static String update() {
-        return  "UPDATE " + TABLE_NAME +
-                "   SET surname = :surname," +
-                "   name = :name," +
-                "   patronymic = :patronymic," +
-                "   mail = :mail," +
-                "   password = :password," +
-                "   last_modified_date = :lmd," +
-                "   is_active = :active " +
+        return  "UPDATE " + TABLE_NAME + " " +
+                "SET surname = :surname," +
+                "    name = :name," +
+                "    patronymic = :patronymic," +
+                "    password = :password," +
+                "    last_modified_date = :lmd " +
                 "WHERE entity_id = :entity_id";
     }
 
