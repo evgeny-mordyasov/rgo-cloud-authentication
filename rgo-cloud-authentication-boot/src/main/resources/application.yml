@@ -1,3 +1,6 @@
+server:
+  port: 8090
+
 spring:
   profiles:
     active: dev
@@ -5,9 +8,18 @@ spring:
 module-properties:
   token:
     lifetimeHours: 1
+  jwt:
+    secret: ru.gold.ordance
+    expirationHours: 168
+  mail:
+    sender: course.paper.asu@mail.ru
+    password: vXX6Aas5ErCy9ndrTVPU
+    host: smtp.mail.ru
+    port: 465
+    protocol: smtps
   persistence:
     url: jdbc:postgresql://localhost:5433/auth
     scheme: auth
-    username: auth_appl
+    username: auth # TODO: auth_appl падает на ERROR: permission denied for sequence
     password: qwe123
     maxPoolSize: 5

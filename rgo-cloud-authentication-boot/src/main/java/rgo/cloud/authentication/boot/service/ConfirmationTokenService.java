@@ -1,7 +1,8 @@
 package rgo.cloud.authentication.boot.service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
-import rgo.cloud.authentication.boot.storage.ConfirmationTokenRepository;
+import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 
 import java.time.LocalDateTime;
@@ -21,14 +22,19 @@ public class ConfirmationTokenService {
     }
 
     public ConfirmationToken save(ConfirmationToken ct) {
-        ConfirmationToken token = addExpiryDate(ct);
+        ConfirmationToken token = generate(ct);
         return repository.save(token);
     }
 
-    private ConfirmationToken addExpiryDate(ConfirmationToken ct) {
+    private ConfirmationToken generate(ConfirmationToken ct) {
         return ct.toBuilder()
+                .token(generateToken())
                 .expiryDate(expiryDateToken())
                 .build();
+    }
+
+    private String generateToken() {
+        return RandomStringUtils.randomNumeric(config.getTokenLength());
     }
 
     private LocalDateTime expiryDateToken() {

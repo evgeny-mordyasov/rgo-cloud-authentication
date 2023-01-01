@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import rgo.cloud.authentication.boot.config.properties.DbProperties;
-import rgo.cloud.authentication.boot.storage.ClientRepository;
-import rgo.cloud.authentication.boot.storage.ConfirmationTokenRepository;
-import rgo.cloud.authentication.boot.storage.DbTxManager;
+import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
+import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
+import rgo.cloud.common.spring.storage.DbTxManager;
 
 import javax.sql.DataSource;
 
@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 public class PersistenceConfig {
 
     @Bean
-    @Profile("dev | test")
+    @Profile("test")
     public DataSource h2() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
@@ -27,7 +27,6 @@ public class PersistenceConfig {
     }
 
     @Bean
-    @Profile("!dev & !test")
     public DataSource pg(DbProperties dbProp) {
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(dbProp.getUrl());

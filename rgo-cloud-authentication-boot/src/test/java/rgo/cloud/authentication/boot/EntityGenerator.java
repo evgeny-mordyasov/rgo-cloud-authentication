@@ -7,25 +7,28 @@ import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import static rgo.cloud.authentication.boot.TestCommonUtil.generateId;
-import static rgo.cloud.authentication.boot.TestCommonUtil.randomString;
+import static rgo.cloud.common.spring.util.TestCommonUtil.*;
 
 public final class EntityGenerator {
-    private static final int TOKEN_LENGTH = 6;
-
     private EntityGenerator() {
     }
 
-    public static ConfirmationToken createRandomConfirmationToken() {
+    public static ConfirmationToken createRandomConfirmationToken(Client client) {
         return ConfirmationToken.builder()
-                .token(generateToken())
-                .clientId(generateId())
+                .client(client)
+                .build();
+    }
+
+    public static ConfirmationToken createRandomFullConfirmationToken(Client client, int tokenLength) {
+        return ConfirmationToken.builder()
+                .token(generateToken(tokenLength))
+                .client(client)
                 .expiryDate(LocalDateTime.now(ZoneOffset.UTC))
                 .build();
     }
 
-    private static String generateToken() {
-        return RandomStringUtils.randomNumeric(TOKEN_LENGTH);
+    private static String generateToken(int tokenLength) {
+        return RandomStringUtils.randomNumeric(tokenLength);
     }
 
     public static Client createRandomClient() {

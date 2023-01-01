@@ -2,14 +2,20 @@ package rgo.cloud.authentication.internal.api.storage;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder(toBuilder = true)
+@ToString
 public class ConfirmationToken {
     private final Long entityId;
     private final String token;
     private final LocalDateTime expiryDate;
-    private final Long clientId;
+    private final Client client;
+
+    public boolean isExpired() {
+        return expiryDate.isBefore(LocalDateTime.now());
+    }
 }

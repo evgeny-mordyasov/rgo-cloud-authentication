@@ -1,19 +1,21 @@
-package rgo.cloud.authentication.boot.storage;
+package rgo.cloud.authentication.boot.storage.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.boot.storage.query.ClientQuery;
 import rgo.cloud.authentication.internal.api.storage.Client;
-import rgo.cloud.authentication.internal.api.storage.Role;
+import rgo.cloud.common.api.exception.UnpredictableException;
+import rgo.cloud.common.spring.storage.DbTxManager;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static rgo.cloud.authentication.boot.storage.repository.mapper.ClientMapper.mapper;
 
 public class ClientRepository {
     private static final Logger log = LoggerFactory.getLogger(ClientRepository.class);
@@ -67,26 +69,16 @@ public class ClientRepository {
                 "password", client.getPassword()));
 
         return tx.tx(() -> {
-            checkMailForDuplicate(client.getMail());
-
             jdbc.update(ClientQuery.save(), params);
             Optional<Client> opt = findByMail(client.getMail());
 
             if (opt.isEmpty()) {
                 String errorMsg = "Client save error.";
                 log.error(errorMsg);
-                throw new RuntimeException(errorMsg);
+                throw new UnpredictableException(errorMsg);
             }
 
             return opt.get();
-        });
-    }
-
-    private void checkMailForDuplicate(String mail) {
-        findByMail(mail).ifPresent(ignored -> {
-            String errorMsg = "Client by mail already exist.";
-            log.error(errorMsg);
-            throw new RuntimeException(errorMsg);
         });
     }
 
@@ -101,12 +93,12 @@ public class ClientRepository {
 
         return tx.tx(() -> {
             jdbc.update(ClientQuery.update(), params);
-            Optional<Client> opt = findByMail(client.getMail());
+            Optional<Client> opt = findById(client.getEntityId());
 
             if (opt.isEmpty()) {
                 String errorMsg = "Client update error.";
                 log.error(errorMsg);
-                throw new RuntimeException(errorMsg);
+                throw new UnpredictableException(errorMsg);
             }
 
             return opt.get();
@@ -126,23 +118,10 @@ public class ClientRepository {
             if (opt.isEmpty()) {
                 String errorMsg = "Client status update error.";
                 log.error(errorMsg);
-                throw new RuntimeException(errorMsg);
+                throw new UnpredictableException(errorMsg);
             }
 
             return opt.get();
         });
     }
-
-    private static final RowMapper<Client> mapper = (rs, num) -> Client.builder()
-            .entityId(rs.getLong("ENTITY_ID"))
-            .surname(rs.getString("SURNAME"))
-            .name(rs.getString("NAME"))
-            .patronymic(rs.getString("PATRONYMIC"))
-            .mail(rs.getString("MAIL"))
-            .password(rs.getString("PASSWORD"))
-            .createdDate(rs.getTimestamp("CREATED_DATE").toLocalDateTime())
-            .lastModifiedDate(rs.getTimestamp("LAST_MODIFIED_DATE").toLocalDateTime())
-            .isActive(rs.getBoolean("IS_ACTIVE"))
-            .role(Role.valueOf(rs.getString("ROLE")))
-            .build();
 }

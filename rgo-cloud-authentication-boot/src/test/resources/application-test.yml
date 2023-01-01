@@ -1,3 +1,10 @@
+server:
+  port: 8090
+
+spring:
+  main:
+    banner-mode: off
+
 module-properties:
   token:
     lifetimeHours: 1

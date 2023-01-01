@@ -13,9 +13,20 @@
     <artifactId>rgo-cloud-authentication-internal-api</artifactId>
 
     <dependencies>
+        <!-- rgo-cloud -->
+        <dependency>
+            <groupId>ru.gold.ordance</groupId>
+            <artifactId>rgo-cloud-common-api</artifactId>
+        </dependency>
+        <!-- rgo-cloud -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 </project>

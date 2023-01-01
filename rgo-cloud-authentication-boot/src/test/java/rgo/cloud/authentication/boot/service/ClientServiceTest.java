@@ -7,36 +7,61 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.boot.storage.ClientRepository;
-import rgo.cloud.authentication.internal.api.exception.EntityNotFoundException;
+import rgo.cloud.authentication.boot.CommonTest;
+import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
 import rgo.cloud.authentication.internal.api.storage.Client;
-import rgo.cloud.authentication.internal.api.storage.Role;
+import rgo.cloud.common.api.model.Role;
+import rgo.cloud.common.api.exception.EntityNotFoundException;
+import rgo.cloud.common.api.exception.ViolatesConstraintException;
 
 import javax.sql.DataSource;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
-import static rgo.cloud.authentication.boot.TestCommonUtil.*;
+import static rgo.cloud.common.spring.util.TestCommonUtil.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ClientServiceTest {
+public class ClientServiceTest extends CommonTest {
 
     @Autowired
     private ClientService service;
 
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Autowired
     private ClientRepository repository;
 
-    @Autowired
-    private DataSource h2;
-
     @BeforeEach
     public void setUp() {
-        runScript("h2/truncate.sql", h2);
+        truncateTables();
+    }
+
+    @Test
+    public void findById_notFound() {
+        Long fakeId = generateId();
+
+        Optional<Client> found = service.findById(fakeId);
+
+        assertTrue(found.isEmpty());
+    }
+
+    @Test
+    public void findById_found() {
+        Client created = createRandomClient();
+        Client saved = repository.save(created);
+
+        Optional<Client> found = service.findById(saved.getEntityId());
+
+        assertTrue(found.isPresent());
+        assertEquals(saved.getEntityId(), found.get().getEntityId());
+        assertEquals(created.getSurname(), found.get().getSurname());
+        assertEquals(created.getName(), found.get().getName());
+        assertEquals(created.getPatronymic(), found.get().getPatronymic());
+        assertEquals(created.getMail(), found.get().getMail());
+        assertEquals(created.getPassword(), found.get().getPassword());
     }
 
     @Test
@@ -76,6 +101,14 @@ public class ClientServiceTest {
         assertTrue(encoder.matches(created.getPassword(), saved.getPassword()));
         assertFalse(saved.isActive());
         assertEquals(Role.USER, saved.getRole());
+    }
+
+    @Test
+    public void save_mailAlreadyExists() {
+        Client created = createRandomClient();
+        repository.save(created);
+
+        assertThrows(ViolatesConstraintException.class, () -> service.save(created), "Client by mail already exist.");
     }
 
     @Test

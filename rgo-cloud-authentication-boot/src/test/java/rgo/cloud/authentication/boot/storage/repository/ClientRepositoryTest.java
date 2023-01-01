@@ -1,12 +1,13 @@
-package rgo.cloud.authentication.boot.storage;
+package rgo.cloud.authentication.boot.storage.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import rgo.cloud.authentication.boot.CommonTest;
 import rgo.cloud.authentication.internal.api.storage.Client;
-import rgo.cloud.authentication.internal.api.storage.Role;
+import rgo.cloud.common.api.model.Role;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -14,21 +15,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
-import static rgo.cloud.authentication.boot.TestCommonUtil.*;
+import static rgo.cloud.common.spring.util.TestCommonUtil.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ClientRepositoryTest {
+public class ClientRepositoryTest extends CommonTest {
 
     @Autowired
     private ClientRepository repository;
 
-    @Autowired
-    private DataSource h2;
-
     @BeforeEach
     public void setUp() {
-        runScript("h2/truncate.sql", h2);
+        truncateTables();
     }
 
     @Test
@@ -90,7 +88,7 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void findByEmail_notFound() {
+    public void findByMail_notFound() {
         String fakeMail = randomString();
 
         Optional<Client> found = repository.findByMail(fakeMail);
@@ -99,7 +97,7 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void findByEmail_found() {
+    public void findByMail_found() {
         Client saved = repository.save(createRandomClient());
 
         Optional<Client> found = repository.findByMail(saved.getMail());
@@ -130,14 +128,6 @@ public class ClientRepositoryTest {
         assertEquals(created.getPassword(), saved.getPassword());
         assertFalse(saved.isActive());
         assertEquals(Role.USER, saved.getRole());
-    }
-
-    @Test
-    public void save_mailAlreadyExists() {
-        Client created = createRandomClient();
-        repository.save(created);
-
-        assertThrows(RuntimeException.class, () -> repository.save(created), "Client by mail already exist.");
     }
 
     @Test

@@ -1,16 +1,19 @@
-package rgo.cloud.authentication.boot.storage;
+package rgo.cloud.authentication.boot.storage.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.boot.storage.query.ConfirmationTokenQuery;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.common.api.exception.UnpredictableException;
+import rgo.cloud.common.spring.storage.DbTxManager;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static rgo.cloud.authentication.boot.storage.repository.mapper.ConfirmationTokenMapper.mapper;
 
 public class ConfirmationTokenRepository {
     private static final Logger log = LoggerFactory.getLogger(ConfirmationTokenRepository.class);
@@ -34,7 +37,7 @@ public class ConfirmationTokenRepository {
 
     private Optional<ConfirmationToken> first(List<ConfirmationToken> list) {
         if (list.isEmpty()) {
-            log.info("The client not found.");
+            log.info("The token not found.");
             return Optional.empty();
         }
 
@@ -44,27 +47,20 @@ public class ConfirmationTokenRepository {
     public ConfirmationToken save(ConfirmationToken ct) {
         MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
                 "token", ct.getToken(),
-                "client_id", ct.getClientId(),
+                "client_id", ct.getClient().getEntityId(),
                 "expiry_date", ct.getExpiryDate()));
 
         return tx.tx(() -> {
             jdbc.update(ConfirmationTokenQuery.save(), params);
-            Optional<ConfirmationToken> opt = findByClientIdAndToken(ct.getClientId(), ct.getToken());
+            Optional<ConfirmationToken> opt = findByClientIdAndToken(ct.getClient().getEntityId(), ct.getToken());
 
             if (opt.isEmpty()) {
                 String errorMsg = "Token save error.";
                 log.error(errorMsg);
-                throw new RuntimeException(errorMsg);
+                throw new UnpredictableException(errorMsg);
             }
 
             return opt.get();
         });
     }
-
-    private static final RowMapper<ConfirmationToken> mapper = (rs, num) -> ConfirmationToken.builder()
-            .entityId(rs.getLong("ENTITY_ID"))
-            .token(rs.getString("TOKEN"))
-            .expiryDate(rs.getTimestamp("EXPIRY_DATE").toLocalDateTime())
-            .clientId(rs.getLong("CLIENT_ID"))
-            .build();
 }
