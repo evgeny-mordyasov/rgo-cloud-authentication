@@ -8,9 +8,6 @@ spring:
 module-properties:
   token:
     lifetimeHours: 1
-  jwt:
-    secret: ru.gold.ordance
-    expirationHours: 168
   mail:
     sender: course.paper.asu@mail.ru
     password: vXX6Aas5ErCy9ndrTVPU
@@ -20,6 +17,6 @@ module-properties:
   persistence:
     url: jdbc:postgresql://localhost:5433/auth
     scheme: auth
-    username: auth # TODO: auth_appl падает на ERROR: permission denied for sequence
+    username: auth_appl
     password: qwe123
     maxPoolSize: 5
