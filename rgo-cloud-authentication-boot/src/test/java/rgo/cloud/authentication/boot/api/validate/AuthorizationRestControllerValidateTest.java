@@ -2,16 +2,13 @@ package rgo.cloud.authentication.boot.api.validate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.common.api.rest.StatusCode;
+import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -28,16 +25,11 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 @SpringBootTest
 @WebAppConfiguration
 @ActiveProfiles("test")
-public class AuthorizationRestControllerValidateTest {
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mvc;
+public class AuthorizationRestControllerValidateTest extends CommonTest {
 
     @BeforeEach
     public void setUp() {
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        initMvc();
     }
 
     @Test

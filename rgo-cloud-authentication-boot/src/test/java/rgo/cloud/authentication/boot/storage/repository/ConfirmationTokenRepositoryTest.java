@@ -5,19 +5,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.boot.CommonTest;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.common.spring.test.CommonTest;
 
-import javax.sql.DataSource;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
 import static rgo.cloud.authentication.boot.EntityGenerator.createRandomFullConfirmationToken;
-import static rgo.cloud.common.spring.util.TestCommonUtil.*;
+import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
+import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
 @SpringBootTest
 @ActiveProfiles("test")

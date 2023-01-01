@@ -6,10 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import rgo.cloud.authentication.boot.CommonTest;
 import rgo.cloud.authentication.boot.service.sender.MailSenderStub;
 import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
@@ -17,6 +13,7 @@ import rgo.cloud.authentication.internal.api.rest.authorization.request.Authoriz
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.api.rest.StatusCode;
+import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import java.util.Optional;
@@ -40,17 +37,12 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 public class AuthorizationRestControllerTest extends CommonTest {
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
     private ClientRepository clientRepository;
-
-    private MockMvc mvc;
 
     @BeforeEach
     public void setUp() {
         truncateTables();
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        initMvc();
     }
 
     @Test
