@@ -11,9 +11,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rgo.cloud.authentication.boot.api.decorator.AuthorizationFacadeDecorator;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
-import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.boot.config.properties.MailSenderProperties;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
+import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.boot.service.ClientService;
 import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
 import rgo.cloud.authentication.boot.service.sender.MailSender;
@@ -21,7 +21,7 @@ import rgo.cloud.authentication.boot.service.sender.MailSenderService;
 import rgo.cloud.authentication.boot.service.sender.MailSenderStub;
 import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
 import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
-import rgo.cloud.common.spring.aspect.ValidateAspect;
+import rgo.cloud.common.spring.config.AspectConfig;
 import rgo.cloud.security.config.SecurityConfig;
 import rgo.cloud.security.config.jwt.JwtProvider;
 
@@ -29,7 +29,7 @@ import java.util.Properties;
 
 @Configuration
 @ConfigurationPropertiesScan
-@Import(value = { SecurityConfig.class, ValidateAspect.class })
+@Import(value = { SecurityConfig.class, AspectConfig.class})
 public class ApplicationConfig {
 
     @Bean

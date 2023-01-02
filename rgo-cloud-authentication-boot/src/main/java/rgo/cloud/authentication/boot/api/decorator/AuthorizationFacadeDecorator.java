@@ -11,7 +11,8 @@ import rgo.cloud.authentication.internal.api.rest.authorization.response.Authori
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 import rgo.cloud.common.api.rest.Response;
-import rgo.cloud.common.spring.aspect.Validate;
+import rgo.cloud.common.spring.annotation.Transactional;
+import rgo.cloud.common.spring.annotation.Validate;
 
 import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
 
@@ -23,7 +24,8 @@ public class AuthorizationFacadeDecorator {
         this.facade = facade;
     }
 
-    public AuthorizationSignUpResponse signUp(AuthorizationSignUpRequest rq) {
+    @Transactional
+    public Response signUp(AuthorizationSignUpRequest rq) {
         Client client = facade.signUp(convert(rq));
         return AuthorizationSignUpResponse.success(client);
     }
@@ -33,6 +35,7 @@ public class AuthorizationFacadeDecorator {
         return AuthorizationSignInResponse.success(client);
     }
 
+    @Transactional
     public Response confirmAccount(AuthorizationConfirmAccountRequest rq) {
         ConfirmationToken token = facade.confirmAccount(rq.getClientId(), rq.getToken());
 

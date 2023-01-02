@@ -9,7 +9,7 @@ import rgo.cloud.authentication.internal.api.rest.client.response.ClientUpdateRe
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.common.api.rest.EmptySuccessfulResponse;
 import rgo.cloud.common.api.rest.Response;
-import rgo.cloud.common.spring.aspect.Validate;
+import rgo.cloud.common.spring.annotation.Validate;
 
 import java.util.Optional;
 
