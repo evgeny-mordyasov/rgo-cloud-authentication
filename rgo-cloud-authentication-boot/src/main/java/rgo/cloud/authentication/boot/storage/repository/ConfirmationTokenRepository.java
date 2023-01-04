@@ -1,7 +1,6 @@
 package rgo.cloud.authentication.boot.storage.repository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.boot.storage.query.ConfirmationTokenQuery;
@@ -15,9 +14,8 @@ import java.util.Optional;
 
 import static rgo.cloud.authentication.boot.storage.repository.mapper.ConfirmationTokenMapper.mapper;
 
+@Slf4j
 public class ConfirmationTokenRepository {
-    private static final Logger log = LoggerFactory.getLogger(ConfirmationTokenRepository.class);
-
     private final DbTxManager tx;
     private final NamedParameterJdbcTemplate jdbc;
 
