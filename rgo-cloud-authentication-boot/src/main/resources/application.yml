@@ -15,7 +15,7 @@ module-properties:
     port: 465
     protocol: smtps
   persistence:
-    url: jdbc:postgresql://localhost:5433/auth
+    url: jdbc:postgresql://common-db:5432/auth
     scheme: auth
     username: auth_appl
     password: qwe123
