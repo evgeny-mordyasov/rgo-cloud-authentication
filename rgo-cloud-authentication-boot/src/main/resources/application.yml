@@ -14,6 +14,7 @@ module-properties:
     host: smtp.mail.ru
     port: 465
     protocol: smtps
+    maxPoolSize: 10
   persistence:
     url: jdbc:postgresql://common-db:5432/auth
     scheme: auth
