@@ -3,9 +3,11 @@ package rgo.cloud.authentication.boot.api.decorator;
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationConfirmAccountRequest;
+import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationResendTokenRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.response.AuthorizationConfirmAccountResponse;
+import rgo.cloud.authentication.internal.api.rest.authorization.response.AuthorizationResendTokenResponse;
 import rgo.cloud.authentication.internal.api.rest.authorization.response.AuthorizationSignInResponse;
 import rgo.cloud.authentication.internal.api.rest.authorization.response.AuthorizationSignUpResponse;
 import rgo.cloud.authentication.internal.api.storage.Client;
@@ -46,5 +48,11 @@ public class AuthorizationFacadeDecorator {
         facade.activeClient(rq.getClientId());
 
         return AuthorizationConfirmAccountResponse.success();
+    }
+
+    @Transactional
+    public Response resend(AuthorizationResendTokenRequest rq) {
+        facade.resend(rq.getClientId());
+        return AuthorizationResendTokenResponse.success();
     }
 }

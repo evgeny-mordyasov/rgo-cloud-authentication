@@ -61,4 +61,24 @@ public class ConfirmationTokenRepository {
             return opt.get();
         });
     }
+
+    public ConfirmationToken update(ConfirmationToken ct) {
+        MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
+                "token", ct.getToken(),
+                "client_id", ct.getClient().getEntityId(),
+                "expiry_date", ct.getExpiryDate()));
+
+        return tx.tx(() -> {
+            jdbc.update(ConfirmationTokenQuery.update(), params);
+            Optional<ConfirmationToken> opt = findByClientIdAndToken(ct.getClient().getEntityId(), ct.getToken());
+
+            if (opt.isEmpty()) {
+                String errorMsg = "Token update error.";
+                log.error(errorMsg);
+                throw new UnpredictableException(errorMsg);
+            }
+
+            return opt.get();
+        });
+    }
 }

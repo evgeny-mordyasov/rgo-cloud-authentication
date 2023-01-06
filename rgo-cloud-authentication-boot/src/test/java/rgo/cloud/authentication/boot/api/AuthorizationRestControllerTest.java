@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
+import rgo.cloud.authentication.boot.config.properties.TokenProperties;
 import rgo.cloud.authentication.boot.service.sender.MailSenderStub;
 import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
+import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
@@ -19,13 +22,12 @@ import rgo.cloud.security.config.util.Endpoint;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
+import static rgo.cloud.authentication.boot.EntityGenerator.*;
 import static rgo.cloud.common.api.util.JsonUtil.toJson;
 import static rgo.cloud.common.api.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
@@ -38,6 +40,12 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private ConfirmationTokenRepository tokenRepository;
+
+    @Autowired
+    private TokenProperties config;
 
     @BeforeEach
     public void setUp() {
@@ -159,6 +167,47 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .param("token", token))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
+
+    @Test
+    public void resendToken() throws Exception {
+        Client savedClient = clientRepository.save(createRandomClient());
+        ConfirmationToken savedToken = tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength()));
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+                .param("clientId", Long.toString(savedClient.getEntityId())))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
+                .andExpect(jsonPath("$.status.description", nullValue()));
+
+        Optional<ConfirmationToken> opt = tokenRepository.findByClientIdAndToken(savedClient.getEntityId(), MailSenderStub.TOKEN);
+        assertTrue(opt.isPresent());
+        assertNotEquals(savedToken.getToken(), opt.get().getToken());
+    }
+
+    @Test
+    public void resendToken_clientIdIsFake() throws Exception {
+        long clientId = generateId();
+        String errorMessage = "The client not found by clientId.";
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+                .param("clientId", Long.toString(clientId)))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
+
+    @Test
+    public void resendToken_clientAlreadyActivated() throws Exception {
+        Client savedClient = clientRepository.save(createRandomClient());
+        clientRepository.updateStatus(savedClient.getEntityId(), true);
+        String errorMessage = "The client already activated.";
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+                .param("clientId", Long.toString(savedClient.getEntityId())))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.ALREADY_ACTIVATED.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
 }

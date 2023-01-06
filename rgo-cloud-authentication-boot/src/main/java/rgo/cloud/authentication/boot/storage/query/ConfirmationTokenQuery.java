@@ -29,4 +29,8 @@ public final class ConfirmationTokenQuery {
     public static String save() {
         return "INSERT INTO " + TABLE_NAME + "(token, expiry_date, client_id) VALUES (:token, :expiry_date, :client_id)";
     }
+
+    public static String update() {
+        return "UPDATE " + TABLE_NAME + " SET token = :token, expiry_date = :expiry_date WHERE client_id = :client_id";
+    }
 }

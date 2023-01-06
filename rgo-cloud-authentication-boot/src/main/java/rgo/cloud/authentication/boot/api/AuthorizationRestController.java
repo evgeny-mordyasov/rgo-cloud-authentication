@@ -3,6 +3,7 @@ package rgo.cloud.authentication.boot.api;
 import org.springframework.web.bind.annotation.*;
 import rgo.cloud.authentication.boot.api.decorator.AuthorizationFacadeDecorator;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationConfirmAccountRequest;
+import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationResendTokenRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.common.api.rest.Response;
@@ -34,5 +35,10 @@ public class AuthorizationRestController {
     public Response confirmAccount(@RequestParam("clientId") Long clientId, @RequestParam("token") String token) {
         return execute(() ->
                 service.confirmAccount(new AuthorizationConfirmAccountRequest(clientId, token)));
+    }
+
+    @PostMapping(value = Endpoint.Authorization.RESEND_TOKEN, produces = JSON)
+    public Response resendToken(@RequestParam("clientId") Long clientId) {
+        return execute(() -> service.resend(new AuthorizationResendTokenRequest(clientId)));
     }
 }

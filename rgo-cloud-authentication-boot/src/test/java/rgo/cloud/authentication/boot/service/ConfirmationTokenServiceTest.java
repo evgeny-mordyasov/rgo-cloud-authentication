@@ -14,8 +14,7 @@ import rgo.cloud.common.spring.test.CommonTest;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static rgo.cloud.authentication.boot.EntityGenerator.*;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
 import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
@@ -73,5 +72,16 @@ public class ConfirmationTokenServiceTest extends CommonTest {
         ConfirmationToken saved = service.save(created);
 
         assertEquals(created.getClient().toString(), saved.getClient().toString());
+    }
+
+    @Test
+    public void update() {
+        Client client = clientRepository.save(createRandomClient());
+        ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client, config.getTokenLength()));
+
+        ConfirmationToken updated = service.update(createRandomFullConfirmationToken(client, config.getTokenLength()));
+
+        assertNotEquals(updated.getToken(), saved.getToken());
+        assertEquals(updated.getClient().toString(), saved.getClient().toString());
     }
 }

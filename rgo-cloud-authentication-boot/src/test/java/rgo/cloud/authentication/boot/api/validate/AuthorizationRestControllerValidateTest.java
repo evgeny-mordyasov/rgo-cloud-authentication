@@ -200,4 +200,16 @@ public class AuthorizationRestControllerValidateTest extends CommonTest {
                 .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
+
+    @Test
+    public void resendToken_clientIdIsNotPositive() throws Exception {
+        long clientId = -generateId();
+        String errorMessage = "The clientId is not positive.";
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+                .param("clientId", Long.toString(clientId)))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
 }

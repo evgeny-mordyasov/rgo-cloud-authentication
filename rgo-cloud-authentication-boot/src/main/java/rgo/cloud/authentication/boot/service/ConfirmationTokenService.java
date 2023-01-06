@@ -26,6 +26,11 @@ public class ConfirmationTokenService {
         return repository.save(token);
     }
 
+    public ConfirmationToken update(ConfirmationToken ct) {
+        ConfirmationToken token = generate(ct);
+        return repository.update(token);
+    }
+
     private ConfirmationToken generate(ConfirmationToken ct) {
         return ct.toBuilder()
                 .token(generateToken())

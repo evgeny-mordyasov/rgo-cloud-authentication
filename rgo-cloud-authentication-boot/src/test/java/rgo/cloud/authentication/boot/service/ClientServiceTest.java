@@ -130,6 +130,7 @@ public class ClientServiceTest extends CommonTest {
         assertEquals(newObj.getPatronymic(), updated.getPatronymic());
         assertEquals(newObj.getMail(), updated.getMail());
         assertTrue(encoder.matches(newObj.getPassword(), updated.getPassword()));
+        assertTrue(saved.getLastModifiedDate().getNano() < updated.getLastModifiedDate().getNano());
         assertEquals(saved.isActive(), updated.isActive());
         assertEquals(saved.getRole(), updated.getRole());
     }

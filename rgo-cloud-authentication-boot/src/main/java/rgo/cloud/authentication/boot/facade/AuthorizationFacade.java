@@ -8,10 +8,7 @@ import rgo.cloud.authentication.boot.service.sender.MailSender;
 import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
-import rgo.cloud.common.api.exception.BannedException;
-import rgo.cloud.common.api.exception.EntityNotFoundException;
-import rgo.cloud.common.api.exception.UnauthorizedException;
-import rgo.cloud.common.api.exception.UnpredictableException;
+import rgo.cloud.common.api.exception.*;
 import rgo.cloud.security.config.jwt.JwtProvider;
 
 import java.util.Optional;
@@ -58,7 +55,7 @@ public class AuthorizationFacade {
         Optional<Client> opt = clientService.findByMail(client.getMail());
 
         if (opt.isEmpty()) {
-            String errorMsg = "The client no found during sign-in";
+            String errorMsg = "The client no found during sign-in.";
             log.error(errorMsg);
             throw new UnpredictableException(errorMsg);
         }
@@ -94,14 +91,41 @@ public class AuthorizationFacade {
     }
 
     public void activeClient(Long clientId) {
-        Optional<Client> found = clientService.findById(clientId);
+        Optional<Client> opt = clientService.findById(clientId);
 
-        if (found.isEmpty()) {
+        if (opt.isEmpty()) {
             String msg = "The client was not found during activation.";
             log.error(msg);
             throw new UnpredictableException(msg);
         }
 
-        clientService.updateStatus(clientId, true);
+        clientService.updateStatus(opt.get().getEntityId(), true);
+    }
+
+    public void resend(Long clientId) {
+        Optional<Client> opt = clientService.findById(clientId);
+
+        if (opt.isEmpty()) {
+            String msg = "The client not found by clientId.";
+            log.error(msg);
+            throw new EntityNotFoundException(msg);
+        }
+
+        if (opt.get().isActive()) {
+            String msg = "The client already activated.";
+            log.error(msg);
+            throw new ClientAlreadyActivatedException(msg);
+        }
+
+        ConfirmationToken token = updateToken(opt.get());
+        mailSender.send(token);
+    }
+
+    private ConfirmationToken updateToken(Client client) {
+        ConfirmationToken token = ConfirmationToken.builder()
+                .client(client)
+                .build();
+
+        return tokenService.update(token);
     }
 }
