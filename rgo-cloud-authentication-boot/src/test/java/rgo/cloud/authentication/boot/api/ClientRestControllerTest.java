@@ -13,7 +13,10 @@ import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -119,9 +122,12 @@ public class ClientRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.object.name", is(updatedClient.getName())))
                 .andExpect(jsonPath("$.object.patronymic", is(updatedClient.getPatronymic())))
                 .andExpect(jsonPath("$.object.mail", is(saved.getMail())))
-                .andExpect(jsonPath("$.object.role", is(saved.getRole().name())))
-                .andExpect(jsonPath("$.object.createdDate", is(saved.getCreatedDate().toString())))
-                .andExpect(jsonPath("$.object.lastModifiedDate", not(saved.getLastModifiedDate().toString())));
+                .andExpect(jsonPath("$.object.role", is(saved.getRole().name())));
+
+        Optional<Client> opt = repository.findById(saved.getEntityId());
+        assertTrue(opt.isPresent());
+        assertEquals(saved.getCreatedDate(), opt.get().getCreatedDate());
+        assertNotEquals(saved.getLastModifiedDate(), opt.get().getLastModifiedDate());
     }
 
     @Test
