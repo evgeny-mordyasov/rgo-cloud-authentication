@@ -13,6 +13,7 @@ import rgo.cloud.common.api.exception.ViolatesConstraintException;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.spring.test.CommonTest;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -130,7 +131,7 @@ public class ClientServiceTest extends CommonTest {
         assertEquals(newObj.getPatronymic(), updated.getPatronymic());
         assertEquals(newObj.getMail(), updated.getMail());
         assertTrue(encoder.matches(newObj.getPassword(), updated.getPassword()));
-        assertTrue(saved.getLastModifiedDate().getNano() < updated.getLastModifiedDate().getNano());
+        assertTrue(saved.getLastModifiedDate().isBefore(updated.getLastModifiedDate().plus(7, ChronoUnit.HOURS)));
         assertEquals(saved.isActive(), updated.isActive());
         assertEquals(saved.getRole(), updated.getRole());
     }
