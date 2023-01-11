@@ -12,7 +12,6 @@ import rgo.cloud.security.config.util.Endpoint;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,28 +28,6 @@ public class ClientRestControllerValidateTest extends CommonTest {
     @BeforeEach
     public void setUp() {
        initMvc();
-    }
-
-    @Test
-    public void findById_idIsNotPositive() throws Exception {
-        long entityId = -1L;
-        String errorMessage = "The entityId is not positive.";
-
-        mvc.perform(get(Endpoint.Client.BASE_URL + "/" + entityId))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
-                .andExpect(jsonPath("$.status.description", equalTo(errorMessage)));
-    }
-
-    @Test
-    public void findByMail_mailIsEmpty() throws Exception {
-        String mail = " ";
-        String errorMessage = "The mail is empty.";
-
-        mvc.perform(get(Endpoint.Client.BASE_URL + "?mail=" + mail))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
-                .andExpect(jsonPath("$.status.description", equalTo(errorMessage)));
     }
 
     @Test
@@ -75,7 +52,7 @@ public class ClientRestControllerValidateTest extends CommonTest {
 
     @Test
     public void update_entityIdIsNotPositive() throws Exception {
-        final Long entityId = -generateId();
+        final long entityId = -generateId();
         final String errorMessage = "The entityId is not positive.";
 
         ClientUpdateRequest rq = ClientUpdateRequest.builder()

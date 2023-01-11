@@ -1,11 +1,9 @@
 package rgo.cloud.authentication.boot.api;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
 import rgo.cloud.authentication.internal.api.rest.client.request.ClientGetByIdRequest;
+import rgo.cloud.authentication.internal.api.rest.client.request.ClientGetByMailRequest;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.security.config.util.Endpoint;
 
@@ -24,5 +22,10 @@ public class MeRestController {
     @GetMapping(value = Endpoint.Me.CLIENT_ID_VARIABLE, produces = JSON)
     public Response findByClientId(@PathVariable Long clientId) {
         return execute(() -> service.findById(new ClientGetByIdRequest(clientId)));
+    }
+
+    @GetMapping(params = "mail", produces = JSON)
+    public Response findByMail(@RequestParam("mail") String mail) {
+        return execute(() -> service.findByMail(new ClientGetByMailRequest(mail)));
     }
 }

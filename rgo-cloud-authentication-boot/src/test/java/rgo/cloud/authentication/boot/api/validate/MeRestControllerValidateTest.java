@@ -36,4 +36,15 @@ public class MeRestControllerValidateTest extends CommonTest {
                 .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
                 .andExpect(jsonPath("$.status.description", equalTo(errorMessage)));
     }
+
+    @Test
+    public void findByMail_mailIsEmpty() throws Exception {
+        String mail = " ";
+        String errorMessage = "The mail is empty.";
+
+        mvc.perform(get(Endpoint.Me.BASE_URL + "?mail=" + mail))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
+                .andExpect(jsonPath("$.status.description", equalTo(errorMessage)));
+    }
 }

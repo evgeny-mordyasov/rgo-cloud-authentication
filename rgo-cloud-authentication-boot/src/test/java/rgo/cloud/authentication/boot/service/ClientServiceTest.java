@@ -41,7 +41,7 @@ public class ClientServiceTest extends CommonTest {
 
     @Test
     public void findById_notFound() {
-        Long fakeId = generateId();
+        long fakeId = generateId();
 
         Optional<Client> found = service.findById(fakeId);
 
@@ -163,7 +163,7 @@ public class ClientServiceTest extends CommonTest {
 
     @Test
     public void updateStatus_notFound() {
-        Long fakeId = generateId();
+        long fakeId = generateId();
 
         assertThrows(EntityNotFoundException.class, () -> service.updateStatus(fakeId, true), "The client by id not found.");
     }
