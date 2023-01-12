@@ -3,15 +3,12 @@ package rgo.cloud.authentication.boot.service.sender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import rgo.cloud.authentication.boot.config.properties.MailSenderProperties;
-import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.authentication.internal.api.mail.MailMessage;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MailSenderService implements MailSender {
-    private final static String SUBJECT = "Complete registration";
-    private final static String TEXT = "To confirm your account, please enter the code in the registration field: ";
-
     private final JavaMailSender jms;
     private final MailSenderProperties config;
     private final ExecutorService executor;
@@ -23,22 +20,22 @@ public class MailSenderService implements MailSender {
     }
 
     @Override
-    public void send(ConfirmationToken token) {
-        executor.submit(() -> sendMessage(token));
+    public void send(MailMessage msg) {
+        executor.submit(() -> sendMessage(msg));
     }
 
-    private void sendMessage(ConfirmationToken token) {
-        SimpleMailMessage mailMessage = createMessage(token.getClient().getMail(), token.getToken());
-        jms.send(mailMessage);
+    private void sendMessage(MailMessage msg) {
+        SimpleMailMessage smm = createMessage(msg);
+        jms.send(smm);
     }
 
-    private SimpleMailMessage createMessage(String mail, String text) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(mail);
-        mailMessage.setSubject(SUBJECT);
-        mailMessage.setFrom(config.getSender());
-        mailMessage.setText(TEXT + text);
+    private SimpleMailMessage createMessage(MailMessage msg) {
+        SimpleMailMessage smm = new SimpleMailMessage();
+        smm.setFrom(config.getSender());
+        smm.setTo(msg.getAddressee());
+        smm.setSubject(msg.getHeader());
+        smm.setText(msg.getMessage());
 
-        return mailMessage;
+        return smm;
     }
 }

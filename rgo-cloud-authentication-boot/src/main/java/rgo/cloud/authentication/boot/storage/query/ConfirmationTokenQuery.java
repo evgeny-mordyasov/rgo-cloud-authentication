@@ -6,7 +6,7 @@ public final class ConfirmationTokenQuery {
     private ConfirmationTokenQuery() {
     }
 
-    public static String findByClientIdAndToken() {
+    public static String findByClientId() {
         return "SELECT cf.entity_id," +
                 "      cf.token, " +
                 "      cf.expiry_date, " +
@@ -23,7 +23,7 @@ public final class ConfirmationTokenQuery {
                 "      c.role as client_role " +
                 "FROM " + TABLE_NAME + " as cf " +
                 "JOIN CLIENT as c ON cf.client_id = c.entity_id " +
-                "WHERE client_id = :client_id AND token = :token";
+                "WHERE client_id = :client_id";
     }
 
     public static String save() {

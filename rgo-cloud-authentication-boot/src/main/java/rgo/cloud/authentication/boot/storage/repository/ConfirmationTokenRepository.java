@@ -24,13 +24,10 @@ public class ConfirmationTokenRepository {
         this.jdbc = tx.jdbc();
     }
 
-    public Optional<ConfirmationToken> findByClientIdAndToken(Long clientId, String token) {
-        MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
-                "token", token,
-                "client_id", clientId));
-
+    public Optional<ConfirmationToken> findByClientId(Long clientId) {
+        MapSqlParameterSource params = new MapSqlParameterSource("client_id", clientId);
         return first(tx.tx(() ->
-                jdbc.query(ConfirmationTokenQuery.findByClientIdAndToken(), params, mapper)));
+                jdbc.query(ConfirmationTokenQuery.findByClientId(), params, mapper)));
     }
 
     private Optional<ConfirmationToken> first(List<ConfirmationToken> list) {
@@ -50,7 +47,7 @@ public class ConfirmationTokenRepository {
 
         return tx.tx(() -> {
             jdbc.update(ConfirmationTokenQuery.save(), params);
-            Optional<ConfirmationToken> opt = findByClientIdAndToken(ct.getClient().getEntityId(), ct.getToken());
+            Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
 
             if (opt.isEmpty()) {
                 String errorMsg = "Token save error.";
@@ -70,7 +67,7 @@ public class ConfirmationTokenRepository {
 
         return tx.tx(() -> {
             jdbc.update(ConfirmationTokenQuery.update(), params);
-            Optional<ConfirmationToken> opt = findByClientIdAndToken(ct.getClient().getEntityId(), ct.getToken());
+            Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
 
             if (opt.isEmpty()) {
                 String errorMsg = "Token update error.";

@@ -39,14 +39,7 @@ public class AuthorizationFacadeDecorator {
 
     @Transactional
     public Response confirmAccount(AuthorizationConfirmAccountRequest rq) {
-        ConfirmationToken token = facade.confirmAccount(rq.getClientId(), rq.getToken());
-
-        if (token.isExpired()) {
-            return AuthorizationConfirmAccountResponse.banned();
-        }
-
-        facade.activeClient(rq.getClientId());
-
+        facade.confirmAccount(rq.getClientId(), rq.getToken());
         return AuthorizationConfirmAccountResponse.success();
     }
 

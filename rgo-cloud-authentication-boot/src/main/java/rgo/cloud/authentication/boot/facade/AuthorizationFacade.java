@@ -5,10 +5,12 @@ import org.springframework.security.authentication.*;
 import rgo.cloud.authentication.boot.service.ClientService;
 import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
 import rgo.cloud.authentication.boot.service.sender.MailSender;
+import rgo.cloud.authentication.internal.api.mail.MailMessage;
 import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 import rgo.cloud.common.api.exception.*;
+import rgo.cloud.common.api.exception.IllegalStateException;
 import rgo.cloud.security.config.jwt.JwtProvider;
 
 import java.util.Optional;
@@ -36,10 +38,18 @@ public class AuthorizationFacade {
     public Client signUp(Client client) {
         Client saved = clientService.save(client);
         ConfirmationToken token = createToken(saved);
-
-        mailSender.send(token);
+        sendToken(token);
 
         return saved;
+    }
+
+    private void sendToken(ConfirmationToken token) {
+        MailMessage msg = MailMessage.builder()
+                .addressee(token.getClient().getMail())
+                .header("Complete registration")
+                .message("To confirm your account, please enter the code in the registration field: " + token.getToken())
+                .build();
+        mailSender.send(msg);
     }
 
     private ConfirmationToken createToken(Client client) {
@@ -78,19 +88,31 @@ public class AuthorizationFacade {
         }
     }
 
-    public ConfirmationToken confirmAccount(Long clientId, String token) {
-        Optional<ConfirmationToken> opt = tokenService.findByClientIdAndToken(clientId, token);
+    public void confirmAccount(Long clientId, String token) {
+        Optional<ConfirmationToken> opt = tokenService.findByClientIdAndToken(clientId);
 
         if (opt.isEmpty()) {
-            String errorMsg = "The token was not found during activation.";
+            String errorMsg = "The client was not found during activation.";
             log.error(errorMsg);
             throw new EntityNotFoundException(errorMsg);
         }
 
-        return opt.get();
+        if (!token.equals(opt.get().getToken())) {
+            String errorMsg = "The token is invalid.";
+            log.error(errorMsg);
+            throw new IllegalStateException(errorMsg);
+        }
+
+        if (opt.get().isExpired()) {
+            String errorMsg = "The token is expired.";
+            log.error(errorMsg);
+            throw new BannedException(errorMsg);
+        }
+
+        activeClient(clientId);
     }
 
-    public void activeClient(Long clientId) {
+    private void activeClient(Long clientId) {
         Optional<Client> opt = clientService.findById(clientId);
 
         if (opt.isEmpty()) {
@@ -118,7 +140,7 @@ public class AuthorizationFacade {
         }
 
         ConfirmationToken token = updateToken(opt.get());
-        mailSender.send(token);
+        sendToken(token);
     }
 
     private ConfirmationToken updateToken(Client client) {

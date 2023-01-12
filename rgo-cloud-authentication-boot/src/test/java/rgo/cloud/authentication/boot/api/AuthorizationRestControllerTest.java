@@ -144,9 +144,12 @@ public class AuthorizationRestControllerTest extends CommonTest {
         assertTrue(opt.isPresent());
         assertFalse(opt.get().isActive());
 
+        Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
+        assertTrue(optToken.isPresent());
+
         mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(opt.get().getEntityId()))
-                .param("token", MailSenderStub.TOKEN))
+                .param("token", optToken.get().getToken()))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
                 .andExpect(jsonPath("$.status.description", nullValue()));
@@ -157,16 +160,32 @@ public class AuthorizationRestControllerTest extends CommonTest {
     }
 
     @Test
-    public void confirmAccount_clientIdOrTokenIsFake() throws Exception {
+    public void confirmAccount_clientId() throws Exception {
         long clientId = generateId();
         String token = randomString();
-        String errorMessage = "The token was not found during activation.";
+        String errorMessage = "The client was not found during activation.";
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(clientId))
                 .param("token", token))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
+
+    @Test
+    public void confirmAccount_tokenIsFake() throws Exception {
+        String token = randomString();
+        String errorMessage = "The token is invalid.";
+
+        Client savedClient = clientRepository.save(createRandomClient());
+        tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength()));
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
+                .param("clientId", Long.toString(savedClient.getEntityId()))
+                .param("token", token))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.ILLEGAL_STATE.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
 
@@ -181,7 +200,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
                 .andExpect(jsonPath("$.status.description", nullValue()));
 
-        Optional<ConfirmationToken> opt = tokenRepository.findByClientIdAndToken(savedClient.getEntityId(), MailSenderStub.TOKEN);
+        Optional<ConfirmationToken> opt = tokenRepository.findByClientId(savedClient.getEntityId());
         assertTrue(opt.isPresent());
         assertNotEquals(savedToken.getToken(), opt.get().getToken());
     }
