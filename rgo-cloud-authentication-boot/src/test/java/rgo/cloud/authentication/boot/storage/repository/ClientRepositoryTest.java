@@ -170,4 +170,25 @@ public class ClientRepositoryTest extends CommonTest {
         assertTrue(updated.isActive());
         assertEquals(saved.getRole(), updated.getRole());
     }
+
+    @Test
+    public void resetPassword() {
+        String generatedPassword = randomString();
+        Client saved = repository.save(createRandomClient());
+
+        repository.resetPassword(saved.getMail(), generatedPassword);
+
+        Optional<Client> opt = repository.findById(saved.getEntityId());
+        assertTrue(opt.isPresent());
+        assertEquals(generatedPassword, opt.get().getPassword());
+    }
+
+    @Test
+    public void resetPassword_exception() {
+        String generatedPassword = randomString();
+        Client saved = repository.save(createRandomClient());
+        repository.save(createRandomClient().toBuilder().mail(saved.getMail()).build());
+
+        assertThrows(RuntimeException.class, () -> repository.resetPassword(saved.getMail(), generatedPassword), "Tx failed.");
+    }
 }

@@ -167,4 +167,16 @@ public class ClientServiceTest extends CommonTest {
 
         assertThrows(EntityNotFoundException.class, () -> service.updateStatus(fakeId, true), "The client by id not found.");
     }
+
+    @Test
+    public void resetPassword() {
+        String generatedPassword = randomString();
+        Client saved = repository.save(createRandomClient());
+
+        service.resetPassword(saved.getMail(), generatedPassword);
+
+        Optional<Client> opt = repository.findById(saved.getEntityId());
+        assertTrue(opt.isPresent());
+        assertTrue(encoder.matches(generatedPassword, opt.get().getPassword()));
+    }
 }

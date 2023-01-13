@@ -122,4 +122,21 @@ public class ClientRepository {
             return opt.get();
         });
     }
+
+    public void resetPassword(String mail, String password) {
+        MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
+                "mail", mail,
+                "password", password,
+                "lmd", LocalDateTime.now(ZoneOffset.UTC)));
+
+        tx.tx(() -> {
+           int result = jdbc.update(ClientQuery.resetPassword(), params);
+
+           if (result != 1) {
+               String errorMsg = "Client password reset error.";
+               log.error(errorMsg);
+               throw new UnpredictableException(errorMsg);
+           }
+        });
+    }
 }

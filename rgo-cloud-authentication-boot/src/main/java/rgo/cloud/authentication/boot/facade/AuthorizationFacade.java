@@ -1,6 +1,7 @@
 package rgo.cloud.authentication.boot.facade;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.*;
 import rgo.cloud.authentication.boot.service.ClientService;
 import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
@@ -84,7 +85,7 @@ public class AuthorizationFacade {
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
             throw new UnauthorizedException("The request contains invalid user data.");
         } catch (LockedException e) {
-            throw new BannedException("The user is not activated.");
+            throw new BannedException("The client is not activated.");
         }
     }
 
@@ -149,5 +150,32 @@ public class AuthorizationFacade {
                 .build();
 
         return tokenService.update(token);
+    }
+
+    public void resetPassword(String mail) {
+        clientService.findByMail(mail).ifPresent(client -> {
+            if (!client.isActive()) {
+                String errorMsg = "The client is not activated.";
+                log.error(errorMsg);
+                throw new BannedException(errorMsg);
+            }
+
+            String password = generatePassword();
+            clientService.resetPassword(mail, password);
+            sendPassword(mail, password);
+        });
+    }
+
+    private String generatePassword() {
+        return RandomStringUtils.random(15, true, true);
+    }
+
+    private void sendPassword(String mail, String password) {
+        MailMessage msg = MailMessage.builder()
+                .addressee(mail)
+                .header("Password recovery")
+                .message("Your new transport password for your account: " + password)
+                .build();
+        mailSender.send(msg);
     }
 }

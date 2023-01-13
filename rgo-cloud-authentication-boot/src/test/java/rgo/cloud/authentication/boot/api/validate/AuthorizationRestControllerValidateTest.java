@@ -11,8 +11,7 @@ import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -208,6 +207,18 @@ public class AuthorizationRestControllerValidateTest extends CommonTest {
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
                 .param("clientId", Long.toString(clientId)))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
+
+    @Test
+    public void resetPassword_mailIsEmpty() throws Exception {
+        String mail = " ";
+        String errorMessage = "The mail is empty.";
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", mail))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));

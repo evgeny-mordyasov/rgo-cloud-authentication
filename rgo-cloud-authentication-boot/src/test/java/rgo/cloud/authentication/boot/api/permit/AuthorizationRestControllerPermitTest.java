@@ -221,6 +221,40 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
 
+    @Test
+    public void resetPassword_success_anonymous() throws Exception {
+        String mail = randomString();
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", mail))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
+    }
+
+    @Test
+    public void resetPassword_success_client() throws Exception {
+        String jwt = createJwt(Role.USER);
+        String mail = randomString();
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", mail)
+                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
+    }
+
+    @Test
+    public void resetPassword_success_admin() throws Exception {
+        String jwt = createJwt(Role.ADMIN);
+        String mail = randomString();
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", mail)
+                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
+    }
+
     private String createJwt(Role role) {
         String mail = randomString();
         ClientDetails client = new ClientDetails(

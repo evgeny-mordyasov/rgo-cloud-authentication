@@ -65,4 +65,9 @@ public class ClientService {
             throw new EntityNotFoundException("The client by id not found.");
         }
     }
+
+    public void resetPassword(String mail, String password) {
+        String encodedPassword = encoder.encode(password);
+        repository.resetPassword(mail, encodedPassword);
+    }
 }

@@ -229,4 +229,36 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ALREADY_ACTIVATED.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
+
+    @Test
+    public void resetPassword() throws Exception {
+        Client saved = clientRepository.save(createRandomClient());
+        clientRepository.updateStatus(saved.getEntityId(), true);
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", saved.getMail()))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
+                .andExpect(jsonPath("$.status.description", nullValue()));
+
+        Optional<Client> opt = clientRepository.findById(saved.getEntityId());
+        assertTrue(opt.isPresent());
+        assertNotEquals(saved.getPassword(), opt.get().getPassword());
+    }
+
+    @Test
+    public void resetPassword_clientNotActivated() throws Exception {
+        Client saved = clientRepository.save(createRandomClient());
+        String errorMessage = "The client is not activated.";
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
+                .param("mail", saved.getMail()))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.BANNED.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+
+        Optional<Client> opt = clientRepository.findById(saved.getEntityId());
+        assertTrue(opt.isPresent());
+        assertEquals(saved.getPassword(), opt.get().getPassword());
+    }
 }
