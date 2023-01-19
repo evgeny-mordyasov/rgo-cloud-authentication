@@ -1,11 +1,12 @@
 package rgo.cloud.authentication.boot.api.decorator.converter;
 
+import rgo.cloud.authentication.internal.api.rest.authorization.HiddenClient;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
 import rgo.cloud.authentication.internal.api.storage.Client;
 
-public class ClientConverter {
+public final class ClientConverter {
     private ClientConverter() {
     }
 
@@ -33,6 +34,20 @@ public class ClientConverter {
                 .name(rq.getName())
                 .patronymic(rq.getPatronymic())
                 .password(rq.getPassword())
+                .build();
+    }
+
+    public static HiddenClient convert(Client client) {
+        return HiddenClient.builder()
+                .entityId(client.getEntityId())
+                .surname(client.getSurname())
+                .name(client.getName())
+                .patronymic(client.getPatronymic())
+                .mail(client.getMail())
+                .createdDate(client.getCreatedDate())
+                .lastModifiedDate(client.getLastModifiedDate())
+                .role(client.getRole())
+                .isActive(client.isActive())
                 .build();
     }
 }

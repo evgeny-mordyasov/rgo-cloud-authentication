@@ -8,6 +8,7 @@ import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
 import rgo.cloud.authentication.boot.service.sender.MailSender;
 import rgo.cloud.authentication.internal.api.mail.MailMessage;
 import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
+import rgo.cloud.authentication.internal.api.rest.authorization.HiddenClient;
 import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
 import rgo.cloud.common.api.exception.*;
@@ -15,6 +16,8 @@ import rgo.cloud.common.api.exception.IllegalStateException;
 import rgo.cloud.security.config.jwt.JwtProvider;
 
 import java.util.Optional;
+
+import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
 
 @Slf4j
 public class AuthorizationFacade {
@@ -36,12 +39,12 @@ public class AuthorizationFacade {
         this.authenticationManager = authenticationManager;
     }
 
-    public Client signUp(Client client) {
+    public HiddenClient signUp(Client client) {
         Client saved = clientService.save(client);
         ConfirmationToken token = createToken(saved);
         sendToken(token);
 
-        return saved;
+        return convert(saved);
     }
 
     private void sendToken(ConfirmationToken token) {
@@ -72,7 +75,7 @@ public class AuthorizationFacade {
         }
 
         return AuthorizedClient.builder()
-                .client(opt.get())
+                .client(convert(opt.get()))
                 .token(jwtProvider.createToken(opt.get().getMail()))
                 .build();
     }

@@ -2,9 +2,9 @@ package rgo.cloud.authentication.boot.api.decorator;
 
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
+import rgo.cloud.authentication.internal.api.rest.authorization.HiddenClient;
 import rgo.cloud.authentication.internal.api.rest.authorization.request.*;
 import rgo.cloud.authentication.internal.api.rest.authorization.response.*;
-import rgo.cloud.authentication.internal.api.storage.Client;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.common.spring.annotation.Transactional;
 import rgo.cloud.common.spring.annotation.Validate;
@@ -21,7 +21,7 @@ public class AuthorizationFacadeDecorator {
 
     @Transactional
     public Response signUp(AuthorizationSignUpRequest rq) {
-        Client client = facade.signUp(convert(rq));
+        HiddenClient client = facade.signUp(convert(rq));
         return AuthorizationSignUpResponse.success(client);
     }
 
