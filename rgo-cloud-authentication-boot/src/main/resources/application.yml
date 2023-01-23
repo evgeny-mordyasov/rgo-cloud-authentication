@@ -1,10 +1,6 @@
 server:
   port: 8090
 
-spring:
-  profiles:
-    active: dev
-
 module-properties:
   token:
     lifetimeHours: 1
@@ -17,7 +13,7 @@ module-properties:
     maxPoolSize: 10
   persistence:
     url: jdbc:postgresql://common-db:5432/auth
-    scheme: auth
+    schema: auth
     username: auth_appl
     password: qwe123
     maxPoolSize: 5
