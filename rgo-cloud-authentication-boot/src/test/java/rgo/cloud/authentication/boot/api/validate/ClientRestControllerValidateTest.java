@@ -93,6 +93,28 @@ public class ClientRestControllerValidateTest extends CommonTest {
     }
 
     @Test
+    public void update_surnameAndNameAreEmpty() throws Exception {
+        String surname = " ";
+        String name = " ";
+        String errorMessage = "The surname is empty. The name is empty.";
+
+        ClientUpdateRequest rq = ClientUpdateRequest.builder()
+                .entityId(generateId())
+                .surname(surname)
+                .name(name)
+                .patronymic(randomString())
+                .password(randomString())
+                .build();
+
+        mvc.perform(put(Endpoint.Client.BASE_URL)
+                .content(toJson(rq))
+                .contentType(JSON))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.INVALID_RQ.name())))
+                .andExpect(jsonPath("$.status.description", equalTo(errorMessage)));
+    }
+
+    @Test
     public void update_nameIsEmpty() throws Exception {
         String name = " ";
         String errorMessage = "The name is empty.";

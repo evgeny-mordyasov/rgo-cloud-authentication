@@ -3,8 +3,7 @@ package rgo.cloud.authentication.internal.api.rest.client.request;
 import lombok.*;
 import rgo.cloud.common.api.rest.Request;
 
-import static rgo.cloud.common.api.util.ValidatorUtil.errorEntityId;
-import static rgo.cloud.common.api.util.ValidatorUtil.errorString;
+import static rgo.cloud.common.api.util.ValidatorUtil.*;
 
 @Builder
 @AllArgsConstructor
@@ -25,5 +24,6 @@ public class ClientUpdateRequest implements Request {
         errorString(name, "name");
         errorString(patronymic, "patronymic");
         errorString(password, "password");
+        finish();
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import rgo.cloud.common.api.rest.Request;
 
 import static rgo.cloud.common.api.util.ValidatorUtil.errorString;
+import static rgo.cloud.common.api.util.ValidatorUtil.finish;
 
 @Builder
 @AllArgsConstructor
@@ -18,5 +19,6 @@ public class AuthorizationSignInRequest implements Request {
     public void validate() {
         errorString(mail, "mail");
         errorString(password, "password");
+        finish();
     }
 }

@@ -7,6 +7,7 @@ import lombok.ToString;
 import rgo.cloud.common.api.rest.Request;
 
 import static rgo.cloud.common.api.util.ValidatorUtil.errorString;
+import static rgo.cloud.common.api.util.ValidatorUtil.finish;
 
 @AllArgsConstructor
 @Getter
@@ -17,5 +18,6 @@ public class ClientGetByMailRequest implements Request {
     @Override
     public void validate() {
         errorString(mail, "mail");
+        finish();
     }
 }

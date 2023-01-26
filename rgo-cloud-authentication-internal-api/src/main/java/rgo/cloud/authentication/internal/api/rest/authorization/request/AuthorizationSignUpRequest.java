@@ -4,6 +4,7 @@ import lombok.*;
 import rgo.cloud.common.api.rest.Request;
 
 import static rgo.cloud.common.api.util.ValidatorUtil.errorString;
+import static rgo.cloud.common.api.util.ValidatorUtil.finish;
 
 @Getter
 @Builder
@@ -26,5 +27,6 @@ public class AuthorizationSignUpRequest implements Request {
         errorString(patronymic, "patronymic");
         errorString(mail, "mail");
         errorString(password, "password");
+        finish();
     }
 }
