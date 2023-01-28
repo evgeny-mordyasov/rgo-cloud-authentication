@@ -1,7 +1,7 @@
 package rgo.cloud.authentication.boot.storage.query;
 
 public final class ClientQuery {
-    private static final String TABLE_NAME = "CLIENT";
+    private static final String TABLE_NAME = "client";
 
     private ClientQuery() {
     }
@@ -11,15 +11,18 @@ public final class ClientQuery {
     }
 
     public static String findById() {
-        return "SELECT * FROM " + TABLE_NAME + " WHERE entity_id = :entity_id";
+        return  "SELECT * FROM " + TABLE_NAME + " " +
+                "WHERE entity_id = :entity_id";
     }
 
     public static String findByMail() {
-        return "SELECT * FROM " + TABLE_NAME + " WHERE mail = :mail";
+        return  "SELECT * FROM " + TABLE_NAME + " " +
+                "WHERE mail = :mail";
     }
 
     public static String save() {
-        return "INSERT INTO " + TABLE_NAME + "(surname, name, patronymic, mail, password) VALUES (:surname, :name, :patronymic, :mail, :password)";
+        return  "INSERT INTO " + TABLE_NAME + "(surname, name, patronymic, mail, password) " +
+                "VALUES (:surname, :name, :patronymic, :mail, :password)";
     }
 
     public static String update() {
@@ -33,10 +36,16 @@ public final class ClientQuery {
     }
 
     public static String updateStatus() {
-        return  "UPDATE " + TABLE_NAME + " SET is_active = :active, last_modified_date = :lmd WHERE entity_id = :entity_id";
+        return  "UPDATE " + TABLE_NAME + " " +
+                "SET is_active = :active, " +
+                "    last_modified_date = :lmd " +
+                "WHERE entity_id = :entity_id";
     }
 
     public static String resetPassword() {
-        return  "UPDATE " + TABLE_NAME + " SET password = :password, last_modified_date = :lmd WHERE mail = :mail";
+        return  "UPDATE " + TABLE_NAME + " " +
+                "SET password = :password, " +
+                "    last_modified_date = :lmd " +
+                "WHERE mail = :mail";
     }
 }
