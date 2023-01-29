@@ -4,6 +4,12 @@ server:
 module-properties:
   token:
     lifetimeHours: 1
+  auth:
+    cookie:
+      authCookieName: AUTH_TOKEN
+      path: /
+      expirationHours: 168
+      secret: ru.gold.ordance
   mail:
     sender: course.paper.asu@mail.ru
     password: vXX6Aas5ErCy9ndrTVPU

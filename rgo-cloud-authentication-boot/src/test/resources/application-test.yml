@@ -8,3 +8,9 @@ spring:
 module-properties:
   token:
     lifetimeHours: 1
+  auth:
+    cookie:
+      authCookieName: TEST_TOKEN
+      path: /
+      expirationHours: 1
+      secret: test

@@ -15,7 +15,10 @@ import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.domain.ClientDetails;
 import rgo.cloud.security.config.jwt.JwtProvider;
+import rgo.cloud.security.config.jwt.properties.JwtProperties;
 import rgo.cloud.security.config.util.Endpoint;
+
+import javax.servlet.http.Cookie;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +39,9 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private JwtProperties config;
 
     @MockBean
     private UserDetailsService userDetailsService;
@@ -77,7 +83,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_UP)
                 .content(toJson(rq))
                 .contentType(JSON)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -96,7 +102,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_UP)
                 .content(toJson(rq))
                 .contentType(JSON)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -126,7 +132,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_IN)
                 .content(toJson(rq))
                 .contentType(JSON)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.UNAUTHORIZED.name())));
     }
@@ -142,7 +148,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_IN)
                 .content(toJson(rq))
                 .contentType(JSON)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.UNAUTHORIZED.name())));
     }
@@ -168,7 +174,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(clientId))
                 .param("token", token)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
@@ -182,7 +188,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(clientId))
                 .param("token", token)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
@@ -204,7 +210,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
                 .param("clientId", Long.toString(clientId))
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
@@ -216,7 +222,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
                 .param("clientId", Long.toString(clientId))
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
@@ -238,7 +244,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
                 .param("mail", mail)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -250,7 +256,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
                 .param("mail", mail)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }

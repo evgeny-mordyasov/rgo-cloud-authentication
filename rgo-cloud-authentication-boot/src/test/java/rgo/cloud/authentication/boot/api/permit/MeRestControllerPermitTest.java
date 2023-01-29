@@ -13,7 +13,10 @@ import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.domain.ClientDetails;
 import rgo.cloud.security.config.jwt.JwtProvider;
+import rgo.cloud.security.config.jwt.properties.JwtProperties;
 import rgo.cloud.security.config.util.Endpoint;
+
+import javax.servlet.http.Cookie;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +35,9 @@ public class MeRestControllerPermitTest extends CommonTest {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private JwtProperties config;
 
     @MockBean
     private UserDetailsService userDetailsService;
@@ -57,7 +63,7 @@ public class MeRestControllerPermitTest extends CommonTest {
         long clientId = generateId();
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "/" + clientId)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -68,7 +74,7 @@ public class MeRestControllerPermitTest extends CommonTest {
         long clientId = generateId();
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "/" + clientId)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -88,7 +94,7 @@ public class MeRestControllerPermitTest extends CommonTest {
         String mail = randomString();
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "?mail=" + mail)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
@@ -99,7 +105,7 @@ public class MeRestControllerPermitTest extends CommonTest {
         String mail = randomString();
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "?mail=" + mail)
-                .header("Authorization", JwtProvider.TOKEN_PREFIX + jwt))
+                .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())));
     }
