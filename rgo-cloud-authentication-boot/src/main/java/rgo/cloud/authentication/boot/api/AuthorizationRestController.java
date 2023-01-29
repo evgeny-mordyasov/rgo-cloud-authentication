@@ -49,6 +49,21 @@ public class AuthorizationRestController {
         rs.addCookie(cookie);
     }
 
+    @GetMapping(value = Endpoint.Authorization.LOGOUT, produces = JSON)
+    public Response logout(HttpServletResponse rs) {
+        return execute(() ->  {
+            clearAuthToken(rs);
+            SecurityContextHolder.clearContext();
+            return AuthorizationLogoutResponse.success();
+        });
+    }
+
+    private void clearAuthToken(HttpServletResponse rs) {
+        Cookie authCookie = new Cookie(config.getAuthCookieName(), StringUtils.EMPTY);
+        authCookie.setPath(config.getPath());
+        rs.addCookie(authCookie);
+    }
+
     @PostMapping(value = Endpoint.Authorization.CONFIRM_ACCOUNT, produces = JSON)
     public Response confirmAccount(@RequestParam("clientId") Long clientId, @RequestParam("token") String token) {
         return execute(() ->
