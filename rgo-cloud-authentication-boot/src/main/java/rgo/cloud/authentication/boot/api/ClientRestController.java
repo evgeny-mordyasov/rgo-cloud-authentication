@@ -2,7 +2,7 @@ package rgo.cloud.authentication.boot.api;
 
 import org.springframework.web.bind.annotation.*;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.security.config.util.Endpoint;
 

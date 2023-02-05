@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;

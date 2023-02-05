@@ -1,9 +1,9 @@
 package rgo.cloud.authentication.boot.api.decorator.converter;
 
-import rgo.cloud.authentication.internal.api.rest.authorization.HiddenClient;
-import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignInRequest;
-import rgo.cloud.authentication.internal.api.rest.authorization.request.AuthorizationSignUpRequest;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
+import rgo.cloud.authentication.rest.api.authorization.HiddenClient;
+import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignInRequest;
+import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignUpRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
 import rgo.cloud.authentication.db.api.entity.Client;
 
 public final class ClientConverter {

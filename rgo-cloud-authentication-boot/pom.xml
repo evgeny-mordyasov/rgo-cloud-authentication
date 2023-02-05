@@ -24,7 +24,7 @@
         <!-- self module -->
         <dependency>
             <groupId>ru.gold.ordance</groupId>
-            <artifactId>rgo-cloud-authentication-internal-api</artifactId>
+            <artifactId>rgo-cloud-authentication-rest-api</artifactId>
         </dependency>
         <!-- self module -->
 

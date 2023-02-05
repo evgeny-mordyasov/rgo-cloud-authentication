@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
 import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;

@@ -22,4 +22,4 @@ module-properties:
     schema: auth
     username: auth_appl
     password: qwe123
-    maxPoolSize: 5
+    maxPoolSize: 10

@@ -1,11 +1,11 @@
 package rgo.cloud.authentication.boot.api.decorator;
 
 import rgo.cloud.authentication.boot.service.ClientService;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientGetByIdRequest;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientGetByMailRequest;
-import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
-import rgo.cloud.authentication.internal.api.rest.client.response.ClientGetEntityResponse;
-import rgo.cloud.authentication.internal.api.rest.client.response.ClientUpdateResponse;
+import rgo.cloud.authentication.rest.api.client.request.ClientGetByIdRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientGetByMailRequest;
+import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
+import rgo.cloud.authentication.rest.api.client.response.ClientGetEntityResponse;
+import rgo.cloud.authentication.rest.api.client.response.ClientUpdateResponse;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.EmptySuccessfulResponse;
 import rgo.cloud.common.api.rest.Response;

@@ -3,7 +3,7 @@ package rgo.cloud.authentication.boot.service.sender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import rgo.cloud.authentication.boot.config.properties.MailSenderProperties;
-import rgo.cloud.authentication.internal.api.mail.MailMessage;
+import rgo.cloud.authentication.boot.service.sender.model.MailMessage;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

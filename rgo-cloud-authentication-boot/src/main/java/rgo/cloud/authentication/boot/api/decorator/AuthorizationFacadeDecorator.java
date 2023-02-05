@@ -1,10 +1,10 @@
 package rgo.cloud.authentication.boot.api.decorator;
 
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
-import rgo.cloud.authentication.internal.api.rest.authorization.AuthorizedClient;
-import rgo.cloud.authentication.internal.api.rest.authorization.HiddenClient;
-import rgo.cloud.authentication.internal.api.rest.authorization.request.*;
-import rgo.cloud.authentication.internal.api.rest.authorization.response.*;
+import rgo.cloud.authentication.rest.api.authorization.AuthorizedClient;
+import rgo.cloud.authentication.rest.api.authorization.HiddenClient;
+import rgo.cloud.authentication.rest.api.authorization.request.*;
+import rgo.cloud.authentication.rest.api.authorization.response.*;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.common.spring.annotation.Transactional;
 import rgo.cloud.common.spring.annotation.Validate;

@@ -1,6 +1,6 @@
 package rgo.cloud.authentication.boot.service.sender;
 
-import rgo.cloud.authentication.internal.api.mail.MailMessage;
+import rgo.cloud.authentication.boot.service.sender.model.MailMessage;
 
 public class MailSenderStub implements MailSender {
     public static String MESSAGE;
