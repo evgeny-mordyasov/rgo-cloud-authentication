@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.entity.Client;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.spring.test.CommonTest;
 
@@ -22,7 +23,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 public class ClientRepositoryTest extends CommonTest {
 
     @Autowired
-    private ClientRepository repository;
+    private ClientRepository clientRepository;
 
     @BeforeEach
     public void setUp() {
@@ -33,7 +34,7 @@ public class ClientRepositoryTest extends CommonTest {
     public void findAll_noOneHasBeenFound() {
         int noOneHasBeenFound = 0;
 
-        List<Client> found = repository.findAll();
+        List<Client> found = clientRepository.findAll();
 
         assertEquals(noOneHasBeenFound, found.size());
     }
@@ -41,9 +42,9 @@ public class ClientRepositoryTest extends CommonTest {
     @Test
     public void findAll_foundOne() {
         int foundOne = 1;
-        repository.save(createRandomClient());
+        clientRepository.save(createRandomClient());
 
-        List<Client> found = repository.findAll();
+        List<Client> found = clientRepository.findAll();
 
         assertEquals(foundOne, found.size());
     }
@@ -51,10 +52,10 @@ public class ClientRepositoryTest extends CommonTest {
     @Test
     public void findAll_foundALot() {
         int foundALot = 2;
-        repository.save(createRandomClient());
-        repository.save(createRandomClient());
+        clientRepository.save(createRandomClient());
+        clientRepository.save(createRandomClient());
 
-        List<Client> found = repository.findAll();
+        List<Client> found = clientRepository.findAll();
 
         assertEquals(foundALot, found.size());
     }
@@ -63,16 +64,16 @@ public class ClientRepositoryTest extends CommonTest {
     public void findById_notFound() {
         long fakeId = generateId();
 
-        Optional<Client> found = repository.findById(fakeId);
+        Optional<Client> found = clientRepository.findById(fakeId);
 
         assertTrue(found.isEmpty());
     }
 
     @Test
     public void findById_found() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
-        Optional<Client> found = repository.findById(saved.getEntityId());
+        Optional<Client> found = clientRepository.findById(saved.getEntityId());
 
         assertTrue(found.isPresent());
         assertEquals(saved.getEntityId(), found.get().getEntityId());
@@ -91,16 +92,16 @@ public class ClientRepositoryTest extends CommonTest {
     public void findByMail_notFound() {
         String fakeMail = randomString();
 
-        Optional<Client> found = repository.findByMail(fakeMail);
+        Optional<Client> found = clientRepository.findByMail(fakeMail);
 
         assertTrue(found.isEmpty());
     }
 
     @Test
     public void findByMail_found() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
-        Optional<Client> found = repository.findByMail(saved.getMail());
+        Optional<Client> found = clientRepository.findByMail(saved.getMail());
 
         assertTrue(found.isPresent());
         assertEquals(saved.getEntityId(), found.get().getEntityId());
@@ -119,7 +120,7 @@ public class ClientRepositoryTest extends CommonTest {
     public void save() {
         Client created = createRandomClient();
 
-        Client saved = repository.save(created);
+        Client saved = clientRepository.save(created);
 
         assertEquals(created.getSurname(), saved.getSurname());
         assertEquals(created.getName(), saved.getName());
@@ -132,7 +133,7 @@ public class ClientRepositoryTest extends CommonTest {
 
     @Test
     public void update() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
         Client newObj = Client.builder()
                 .entityId(saved.getEntityId())
                 .surname(randomString())
@@ -142,7 +143,7 @@ public class ClientRepositoryTest extends CommonTest {
                 .password(randomString())
                 .build();
 
-        Client updated = repository.update(newObj);
+        Client updated = clientRepository.update(newObj);
 
         assertEquals(newObj.getEntityId(), updated.getEntityId());
         assertEquals(newObj.getSurname(), updated.getSurname());
@@ -156,10 +157,10 @@ public class ClientRepositoryTest extends CommonTest {
 
     @Test
     public void updateStatus_activeIsTrue() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
         assertFalse(saved.isActive());
 
-        Client updated = repository.updateStatus(saved.getEntityId(), true);
+        Client updated = clientRepository.updateStatus(saved.getEntityId(), true);
 
         assertEquals(updated.getEntityId(), updated.getEntityId());
         assertEquals(updated.getSurname(), updated.getSurname());
@@ -174,11 +175,11 @@ public class ClientRepositoryTest extends CommonTest {
     @Test
     public void resetPassword() {
         String generatedPassword = randomString();
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
-        repository.resetPassword(saved.getMail(), generatedPassword);
+        clientRepository.resetPassword(saved.getMail(), generatedPassword);
 
-        Optional<Client> opt = repository.findById(saved.getEntityId());
+        Optional<Client> opt = clientRepository.findById(saved.getEntityId());
         assertTrue(opt.isPresent());
         assertEquals(generatedPassword, opt.get().getPassword());
     }
@@ -186,9 +187,9 @@ public class ClientRepositoryTest extends CommonTest {
     @Test
     public void resetPassword_exception() {
         String generatedPassword = randomString();
-        Client saved = repository.save(createRandomClient());
-        repository.save(createRandomClient().toBuilder().mail(saved.getMail()).build());
+        Client saved = clientRepository.save(createRandomClient());
+        clientRepository.save(createRandomClient().toBuilder().mail(saved.getMail()).build());
 
-        assertThrows(RuntimeException.class, () -> repository.resetPassword(saved.getMail(), generatedPassword), "Tx failed.");
+        assertThrows(RuntimeException.class, () -> clientRepository.resetPassword(saved.getMail(), generatedPassword), "Tx failed.");
     }
 }

@@ -6,7 +6,7 @@ import rgo.cloud.authentication.internal.api.rest.client.request.ClientGetByMail
 import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
 import rgo.cloud.authentication.internal.api.rest.client.response.ClientGetEntityResponse;
 import rgo.cloud.authentication.internal.api.rest.client.response.ClientUpdateResponse;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.EmptySuccessfulResponse;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.common.spring.annotation.Validate;

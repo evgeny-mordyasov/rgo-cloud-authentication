@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
+import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
@@ -28,7 +28,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 public class MeRestControllerTest extends CommonTest {
 
     @Autowired
-    private ClientRepository repository;
+    private ClientRepository clientRepository;
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +49,7 @@ public class MeRestControllerTest extends CommonTest {
 
     @Test
     public void findByClientId_found() throws Exception {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "/" + saved.getEntityId()))
                 .andExpect(content().contentType(JSON))
@@ -77,7 +77,7 @@ public class MeRestControllerTest extends CommonTest {
 
     @Test
     public void findByMail_found() throws Exception {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
         mvc.perform(get(Endpoint.Me.BASE_URL + "?mail=" + saved.getMail()))
                 .andExpect(content().contentType(JSON))

@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.internal.api.rest.client.request.ClientUpdateRequest;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,7 +32,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 public class ClientRestControllerTest extends CommonTest {
 
     @Autowired
-    private ClientRepository repository;
+    private ClientRepository clientRepository;
 
     @BeforeEach
     public void setUp() {
@@ -43,7 +42,7 @@ public class ClientRestControllerTest extends CommonTest {
 
     @Test
     public void update() throws Exception {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
         Client updatedClient = createRandomClient();
         ClientUpdateRequest rq = ClientUpdateRequest.builder()
@@ -68,7 +67,7 @@ public class ClientRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.object.mail", is(saved.getMail())))
                 .andExpect(jsonPath("$.object.role", is(saved.getRole().name())));
 
-        Optional<Client> opt = repository.findById(saved.getEntityId());
+        Optional<Client> opt = clientRepository.findById(saved.getEntityId());
         assertTrue(opt.isPresent());
         assertEquals(saved.getCreatedDate(), opt.get().getCreatedDate());
         assertNotEquals(saved.getLastModifiedDate(), opt.get().getLastModifiedDate());

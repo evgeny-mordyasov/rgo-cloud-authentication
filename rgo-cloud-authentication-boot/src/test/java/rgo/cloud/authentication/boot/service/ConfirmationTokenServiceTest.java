@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
-import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
-import rgo.cloud.authentication.internal.api.storage.Client;
-import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
+import rgo.cloud.authentication.db.api.entity.Client;
+import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
+import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.common.spring.test.CommonTest;
 
 import java.util.Optional;
@@ -17,7 +17,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static rgo.cloud.authentication.boot.EntityGenerator.*;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
-import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
 @SpringBootTest
 @ActiveProfiles("test")

@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.internal.api.storage;
+package rgo.cloud.authentication.db.api.entity;
 
 import lombok.Builder;
 import lombok.Getter;

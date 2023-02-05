@@ -2,8 +2,8 @@ package rgo.cloud.authentication.boot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
+import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.exception.EntityNotFoundException;
 import rgo.cloud.common.api.exception.ViolatesConstraintException;
 

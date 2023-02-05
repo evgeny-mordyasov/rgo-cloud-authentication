@@ -19,8 +19,8 @@ import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
 import rgo.cloud.authentication.boot.service.sender.MailSender;
 import rgo.cloud.authentication.boot.service.sender.MailSenderService;
 import rgo.cloud.authentication.boot.service.sender.MailSenderStub;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
-import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
+import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.common.spring.config.AspectConfig;
 import rgo.cloud.security.config.SecurityConfig;
 import rgo.cloud.security.config.jwt.JwtProvider;
@@ -33,13 +33,13 @@ import java.util.Properties;
 public class ApplicationConfig {
 
     @Bean
-    public ClientService clientService(ClientRepository repository, PasswordEncoder encoder) {
-        return new ClientService(repository, encoder);
+    public ClientService clientService(ClientRepository clientRepository, PasswordEncoder encoder) {
+        return new ClientService(clientRepository, encoder);
     }
 
     @Bean
-    public ConfirmationTokenService tokenService(ConfirmationTokenRepository repository, TokenProperties config) {
-        return new ConfirmationTokenService(repository, config);
+    public ConfirmationTokenService tokenService(ConfirmationTokenRepository tokenRepository, TokenProperties config) {
+        return new ConfirmationTokenService(tokenRepository, config);
     }
 
     @Bean

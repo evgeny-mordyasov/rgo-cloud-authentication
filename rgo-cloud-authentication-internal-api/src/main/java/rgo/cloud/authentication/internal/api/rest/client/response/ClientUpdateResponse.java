@@ -3,7 +3,7 @@ package rgo.cloud.authentication.internal.api.rest.client.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.common.api.rest.Status;
 

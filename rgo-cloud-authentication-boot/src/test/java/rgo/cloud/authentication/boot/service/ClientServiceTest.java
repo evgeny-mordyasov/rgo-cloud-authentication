@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.boot.storage.repository.ClientRepository;
-import rgo.cloud.authentication.internal.api.storage.Client;
+import rgo.cloud.authentication.db.api.entity.Client;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.common.api.exception.EntityNotFoundException;
 import rgo.cloud.common.api.exception.ViolatesConstraintException;
 import rgo.cloud.common.api.model.Role;
@@ -32,7 +32,7 @@ public class ClientServiceTest extends CommonTest {
     private PasswordEncoder encoder;
 
     @Autowired
-    private ClientRepository repository;
+    private ClientRepository clientRepository;
 
     @BeforeEach
     public void setUp() {
@@ -51,7 +51,7 @@ public class ClientServiceTest extends CommonTest {
     @Test
     public void findById_found() {
         Client created = createRandomClient();
-        Client saved = repository.save(created);
+        Client saved = clientRepository.save(created);
 
         Optional<Client> found = service.findById(saved.getEntityId());
 
@@ -76,7 +76,7 @@ public class ClientServiceTest extends CommonTest {
     @Test
     public void findByMail_found() {
         Client created = createRandomClient();
-        repository.save(created);
+        clientRepository.save(created);
 
         Optional<Client> found = service.findByMail(created.getMail());
 
@@ -106,14 +106,14 @@ public class ClientServiceTest extends CommonTest {
     @Test
     public void save_mailAlreadyExists() {
         Client created = createRandomClient();
-        repository.save(created);
+        clientRepository.save(created);
 
         assertThrows(ViolatesConstraintException.class, () -> service.save(created), "Client by mail already exist.");
     }
 
     @Test
     public void update_passwordUpdated() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
         Client newObj = Client.builder()
                 .entityId(saved.getEntityId())
                 .surname(randomString())
@@ -145,7 +145,7 @@ public class ClientServiceTest extends CommonTest {
 
     @Test
     public void updateStatus_statusUpdated() {
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
         Client newObj = Client.builder()
                 .entityId(saved.getEntityId())
                 .surname(randomString())
@@ -171,11 +171,11 @@ public class ClientServiceTest extends CommonTest {
     @Test
     public void resetPassword() {
         String generatedPassword = randomString();
-        Client saved = repository.save(createRandomClient());
+        Client saved = clientRepository.save(createRandomClient());
 
         service.resetPassword(saved.getMail(), generatedPassword);
 
-        Optional<Client> opt = repository.findById(saved.getEntityId());
+        Optional<Client> opt = clientRepository.findById(saved.getEntityId());
         assertTrue(opt.isPresent());
         assertTrue(encoder.matches(generatedPassword, opt.get().getPassword()));
     }

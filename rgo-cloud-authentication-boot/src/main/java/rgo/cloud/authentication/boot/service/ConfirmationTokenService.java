@@ -2,8 +2,8 @@ package rgo.cloud.authentication.boot.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
-import rgo.cloud.authentication.boot.storage.repository.ConfirmationTokenRepository;
-import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
+import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

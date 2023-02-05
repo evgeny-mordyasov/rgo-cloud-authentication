@@ -1,8 +1,8 @@
 package rgo.cloud.authentication.boot;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import rgo.cloud.authentication.internal.api.storage.Client;
-import rgo.cloud.authentication.internal.api.storage.ConfirmationToken;
+import rgo.cloud.authentication.db.api.entity.Client;
+import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
