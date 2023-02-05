@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.boot.storage.query.ConfirmationTokenQuery;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
-import rgo.cloud.common.api.exception.UnpredictableException;
 import rgo.cloud.common.spring.storage.DbTxManager;
 
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static rgo.cloud.authentication.boot.storage.repository.natural.mapper.ConfirmationTokenMapper.mapper;
+import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 
 @Slf4j
 public class PostgresConfirmationTokenRepository implements ConfirmationTokenRepository {
@@ -47,12 +47,13 @@ public class PostgresConfirmationTokenRepository implements ConfirmationTokenRep
                 "expiry_date", ct.getExpiryDate()));
 
         int result = jdbc.update(ConfirmationTokenQuery.save(), params);
-        Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
+        if (result != 1) {
+            unpredictableError("Token save error.");
+        }
 
-        if (opt.isEmpty() || result != 1) {
-            String errorMsg = "Token save error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+        Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
+        if (opt.isEmpty()) {
+            unpredictableError("Token save error during searching.");
         }
 
         return opt.get();
@@ -66,12 +67,13 @@ public class PostgresConfirmationTokenRepository implements ConfirmationTokenRep
                 "expiry_date", ct.getExpiryDate()));
 
         int result = jdbc.update(ConfirmationTokenQuery.update(), params);
-        Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
+        if (result != 1) {
+            unpredictableError("Token update error.");
+        }
 
-        if (opt.isEmpty() || result != 1) {
-            String errorMsg = "Token update error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+        Optional<ConfirmationToken> opt = findByClientId(ct.getClient().getEntityId());
+        if (opt.isEmpty()) {
+            unpredictableError("Token update error during searching.");
         }
 
         return opt.get();

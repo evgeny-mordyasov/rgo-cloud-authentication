@@ -18,6 +18,7 @@ import rgo.cloud.security.config.jwt.JwtProvider;
 import java.util.Optional;
 
 import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
+import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 
 @Slf4j
 public class AuthorizationFacade {
@@ -69,9 +70,7 @@ public class AuthorizationFacade {
         Optional<Client> opt = clientService.findByMail(client.getMail());
 
         if (opt.isEmpty()) {
-            String errorMsg = "The client no found during sign-in.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+            unpredictableError("The client no found during sign-in.");
         }
 
         return AuthorizedClient.builder()
@@ -120,9 +119,7 @@ public class AuthorizationFacade {
         Optional<Client> opt = clientService.findById(clientId);
 
         if (opt.isEmpty()) {
-            String msg = "The client was not found during activation.";
-            log.error(msg);
-            throw new UnpredictableException(msg);
+            unpredictableError("The client was not found during activation.");
         }
 
         clientService.updateStatus(opt.get().getEntityId(), true);

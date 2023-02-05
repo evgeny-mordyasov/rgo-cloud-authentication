@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.boot.storage.query.ClientQuery;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
-import rgo.cloud.common.api.exception.UnpredictableException;
 import rgo.cloud.common.spring.storage.DbTxManager;
 
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static rgo.cloud.authentication.boot.storage.repository.natural.mapper.ClientMapper.mapper;
+import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 
 @Slf4j
 public class PostgresClientRepository implements ClientRepository {
@@ -71,12 +71,13 @@ public class PostgresClientRepository implements ClientRepository {
                 "password", client.getPassword()));
 
         int result = jdbc.update(ClientQuery.save(), params);
-        Optional<Client> opt = findByMail(client.getMail());
+        if (result != 1) {
+            unpredictableError("Client save error.");
+        }
 
-        if (opt.isEmpty() || result != 1) {
-            String errorMsg = "Client save error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+        Optional<Client> opt = findByMail(client.getMail());
+        if (opt.isEmpty()) {
+            unpredictableError("Client save error during searching.");
         }
 
         return opt.get();
@@ -93,12 +94,13 @@ public class PostgresClientRepository implements ClientRepository {
                 "lmd", LocalDateTime.now(ZoneOffset.UTC)));
 
         int result = jdbc.update(ClientQuery.update(), params);
-        Optional<Client> opt = findById(client.getEntityId());
+        if (result != 1) {
+            unpredictableError("Client update error.");
+        }
 
-        if (opt.isEmpty() || result != 1) {
-            String errorMsg = "Client update error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+        Optional<Client> opt = findById(client.getEntityId());
+        if (opt.isEmpty()) {
+            unpredictableError("Client update error during searching.");
         }
 
         return opt.get();
@@ -112,12 +114,13 @@ public class PostgresClientRepository implements ClientRepository {
                 "active", status));
 
         int result = jdbc.update(ClientQuery.updateStatus(), params);
-        Optional<Client> opt = findById(entityId);
+        if (result != 1) {
+            unpredictableError("Client status update error.");
+        }
 
-        if (opt.isEmpty() || result != 1) {
-            String errorMsg = "Client status update error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+        Optional<Client> opt = findById(entityId);
+        if (opt.isEmpty()) {
+            unpredictableError("Client status update error during searching.");
         }
 
         return opt.get();
@@ -132,9 +135,7 @@ public class PostgresClientRepository implements ClientRepository {
 
         int result = jdbc.update(ClientQuery.resetPassword(), params);
         if (result != 1) {
-            String errorMsg = "Client password reset error.";
-            log.error(errorMsg);
-            throw new UnpredictableException(errorMsg);
+            unpredictableError("Client password reset error.");
         }
     }
 }
