@@ -1,9 +1,9 @@
-package rgo.cloud.authentication.boot.service.sender;
+package rgo.cloud.authentication.mail.api;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import rgo.cloud.authentication.boot.config.properties.MailSenderProperties;
-import rgo.cloud.authentication.boot.service.sender.model.MailMessage;
+import rgo.cloud.authentication.mail.api.model.MailMessage;
+import rgo.cloud.authentication.mail.api.properties.MailSenderProperties;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +16,7 @@ public class MailSenderService implements MailSender {
     public MailSenderService(JavaMailSender jms, MailSenderProperties config) {
         this.jms = jms;
         this.config = config;
-        this.executor = Executors.newFixedThreadPool(config.getMaxPoolSize());
+        this.executor = Executors.newFixedThreadPool(config.maxPoolSize());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MailSenderService implements MailSender {
 
     private SimpleMailMessage createMessage(MailMessage msg) {
         SimpleMailMessage smm = new SimpleMailMessage();
-        smm.setFrom(config.getSender());
+        smm.setFrom(config.sender());
         smm.setTo(msg.getAddressee());
         smm.setSubject(msg.getHeader());
         smm.setText(msg.getMessage());

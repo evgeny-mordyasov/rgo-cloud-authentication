@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.service.sender.model;
+package rgo.cloud.authentication.mail.api.model;
 
 import lombok.Builder;
 import lombok.Getter;

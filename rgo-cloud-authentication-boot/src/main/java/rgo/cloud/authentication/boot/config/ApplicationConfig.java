@@ -11,16 +11,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rgo.cloud.authentication.boot.api.decorator.AuthorizationFacadeDecorator;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
-import rgo.cloud.authentication.boot.config.properties.MailSenderProperties;
 import rgo.cloud.authentication.boot.config.properties.TokenProperties;
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.boot.service.ClientService;
 import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
-import rgo.cloud.authentication.boot.service.sender.MailSender;
-import rgo.cloud.authentication.boot.service.sender.MailSenderService;
-import rgo.cloud.authentication.boot.service.sender.MailSenderStub;
+import rgo.cloud.authentication.mail.api.MailSender;
+import rgo.cloud.authentication.mail.api.MailSenderService;
+import rgo.cloud.authentication.mail.api.MailSenderStub;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
+import rgo.cloud.authentication.mail.api.properties.MailSenderProperties;
 import rgo.cloud.common.spring.config.AspectConfig;
 import rgo.cloud.security.config.SecurityConfig;
 import rgo.cloud.security.config.jwt.JwtProvider;
@@ -45,15 +45,15 @@ public class ApplicationConfig {
     @Bean
     public JavaMailSender javaMailSender(MailSenderProperties config) {
         JavaMailSenderImpl jms = new JavaMailSenderImpl();
-        jms.setHost(config.getHost());
-        jms.setPort(config.getPort());
-        jms.setProtocol(config.getProtocol());
+        jms.setHost(config.host());
+        jms.setPort(config.port());
+        jms.setProtocol(config.protocol());
 
-        jms.setUsername(config.getSender());
-        jms.setPassword(config.getPassword());
+        jms.setUsername(config.sender());
+        jms.setPassword(config.password());
 
         Properties props = jms.getJavaMailProperties();
-        props.put("mail.transport.protocol", config.getProtocol());
+        props.put("mail.transport.protocol", config.protocol());
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "false");

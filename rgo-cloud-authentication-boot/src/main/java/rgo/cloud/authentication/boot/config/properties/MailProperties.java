@@ -2,10 +2,11 @@ package rgo.cloud.authentication.boot.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+import rgo.cloud.authentication.mail.api.properties.MailSenderProperties;
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "module-properties.mail")
-public class MailSenderProperties {
+public class MailProperties implements MailSenderProperties {
     private final String sender;
     private final String password;
     private final String host;
@@ -13,7 +14,7 @@ public class MailSenderProperties {
     private final String protocol;
     private final int maxPoolSize;
 
-    public MailSenderProperties(String sender, String password, String host,
+    public MailProperties(String sender, String password, String host,
                                 int port, String protocol, int maxPoolSize) {
         this.sender = sender;
         this.password = password;
@@ -23,27 +24,33 @@ public class MailSenderProperties {
         this.maxPoolSize = maxPoolSize;
     }
 
-    public String getSender() {
+    @Override
+    public String sender() {
         return sender;
     }
 
-    public String getPassword() {
+    @Override
+    public String password() {
         return password;
     }
 
-    public String getHost() {
+    @Override
+    public String host() {
         return host;
     }
 
-    public int getPort() {
+    @Override
+    public int port() {
         return port;
     }
 
-    public String getProtocol() {
+    @Override
+    public String protocol() {
         return protocol;
     }
 
-    public int getMaxPoolSize() {
+    @Override
+    public int maxPoolSize() {
         return maxPoolSize;
     }
 }
