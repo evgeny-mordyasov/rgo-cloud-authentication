@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.boot.config.properties.TokenProperties;
+import rgo.cloud.authentication.service.config.properties.TokenProperties;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;

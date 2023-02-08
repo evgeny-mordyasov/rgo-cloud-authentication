@@ -1,6 +1,6 @@
 package rgo.cloud.authentication.boot.api.decorator;
 
-import rgo.cloud.authentication.boot.service.ClientService;
+import rgo.cloud.authentication.service.ClientService;
 import rgo.cloud.authentication.rest.api.client.request.ClientGetByIdRequest;
 import rgo.cloud.authentication.rest.api.client.request.ClientGetByMailRequest;
 import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;

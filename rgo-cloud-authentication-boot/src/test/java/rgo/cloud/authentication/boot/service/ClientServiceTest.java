@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
+import rgo.cloud.authentication.service.ClientService;
 import rgo.cloud.common.api.exception.EntityNotFoundException;
 import rgo.cloud.common.api.exception.ViolatesConstraintException;
 import rgo.cloud.common.api.model.Role;

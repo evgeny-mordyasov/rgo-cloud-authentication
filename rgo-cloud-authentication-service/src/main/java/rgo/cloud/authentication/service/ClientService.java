@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.service;
+package rgo.cloud.authentication.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

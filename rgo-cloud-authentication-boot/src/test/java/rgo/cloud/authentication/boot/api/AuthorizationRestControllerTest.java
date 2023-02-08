@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import rgo.cloud.authentication.boot.config.properties.TokenProperties;
+import rgo.cloud.authentication.service.config.properties.TokenProperties;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignInRequest;

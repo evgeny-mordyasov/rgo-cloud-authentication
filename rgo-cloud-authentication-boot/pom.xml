@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>ru.gold.ordance</groupId>
-            <artifactId>rgo-cloud-authentication-db</artifactId>
+            <artifactId>rgo-cloud-authentication-service</artifactId>
         </dependency>
         <!-- self module -->
 
