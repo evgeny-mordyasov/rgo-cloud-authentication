@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import rgo.cloud.authentication.db.api.properties.DbProperties;
+import rgo.cloud.common.api.properties.DbProperties;
 import rgo.cloud.common.spring.storage.DbTxManager;
 
 import javax.sql.DataSource;

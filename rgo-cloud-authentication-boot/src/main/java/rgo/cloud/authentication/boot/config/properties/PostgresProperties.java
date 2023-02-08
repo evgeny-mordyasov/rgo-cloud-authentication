@@ -2,7 +2,7 @@ package rgo.cloud.authentication.boot.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
-import rgo.cloud.authentication.db.api.properties.DbProperties;
+import rgo.cloud.common.api.properties.DbProperties;
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "module-properties.persistence")
