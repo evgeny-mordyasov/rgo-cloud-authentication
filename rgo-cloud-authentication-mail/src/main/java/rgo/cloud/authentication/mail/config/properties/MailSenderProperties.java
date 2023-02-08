@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.mail.api.properties;
+package rgo.cloud.authentication.mail.config.properties;
 
 public interface MailSenderProperties {
     String sender();

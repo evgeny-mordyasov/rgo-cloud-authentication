@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rgo-cloud-authentication-mail-api</artifactId>
+    <artifactId>rgo-cloud-authentication-mail</artifactId>
 
     <dependencies>
         <!-- spring -->

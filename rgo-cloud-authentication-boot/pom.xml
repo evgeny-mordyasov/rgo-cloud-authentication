@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>ru.gold.ordance</groupId>
-            <artifactId>rgo-cloud-authentication-mail-api</artifactId>
+            <artifactId>rgo-cloud-authentication-mail</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.gold.ordance</groupId>

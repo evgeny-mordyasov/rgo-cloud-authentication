@@ -1,9 +1,9 @@
-package rgo.cloud.authentication.mail.api;
+package rgo.cloud.authentication.mail;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import rgo.cloud.authentication.mail.api.model.MailMessage;
-import rgo.cloud.authentication.mail.api.properties.MailSenderProperties;
+import rgo.cloud.authentication.mail.model.MailMessage;
+import rgo.cloud.authentication.mail.config.properties.MailSenderProperties;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

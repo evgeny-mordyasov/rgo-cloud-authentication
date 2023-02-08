@@ -1,8 +1,7 @@
-package rgo.cloud.authentication.boot.config.properties;
+package rgo.cloud.authentication.mail.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
-import rgo.cloud.authentication.mail.api.properties.MailSenderProperties;
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "module-properties.mail")
