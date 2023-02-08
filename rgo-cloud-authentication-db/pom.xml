@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rgo-cloud-authentication-rest-api</artifactId>
+    <artifactId>rgo-cloud-authentication-db</artifactId>
 
     <dependencies>
         <!-- self modules -->
@@ -20,13 +20,18 @@
         </dependency>
         <!-- self modules -->
 
+        <!-- rgo-cloud -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>ru.gold.ordance</groupId>
+            <artifactId>rgo-cloud-common-spring</artifactId>
         </dependency>
+        <!-- rgo-cloud -->
+
+        <!-- spring -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
+        <!-- spring -->
     </dependencies>
 </project>

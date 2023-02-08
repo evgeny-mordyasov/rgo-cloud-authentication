@@ -15,6 +15,7 @@ import rgo.cloud.authentication.boot.config.properties.TokenProperties;
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.boot.service.ClientService;
 import rgo.cloud.authentication.boot.service.ConfirmationTokenService;
+import rgo.cloud.authentication.db.config.PersistenceConfig;
 import rgo.cloud.authentication.mail.api.MailSender;
 import rgo.cloud.authentication.mail.api.MailSenderService;
 import rgo.cloud.authentication.mail.api.MailSenderStub;
@@ -29,7 +30,7 @@ import java.util.Properties;
 
 @Configuration
 @ConfigurationPropertiesScan
-@Import(value = { SecurityConfig.class, AspectConfig.class})
+@Import(value = { SecurityConfig.class, AspectConfig.class, PersistenceConfig.class})
 public class ApplicationConfig {
 
     @Bean

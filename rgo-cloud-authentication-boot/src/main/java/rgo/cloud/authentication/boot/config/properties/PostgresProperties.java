@@ -2,17 +2,18 @@ package rgo.cloud.authentication.boot.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+import rgo.cloud.authentication.db.api.properties.DbProperties;
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "module-properties.persistence")
-public class DbProperties {
+public class PostgresProperties implements DbProperties {
     private final String url;
     private final String schema;
     private final String username;
     private final String password;
     private final int maxPoolSize;
 
-    public DbProperties(String url, String schema, String username, String password, int maxPoolSize) {
+    public PostgresProperties(String url, String schema, String username, String password, int maxPoolSize) {
         this.url = url;
         this.schema = schema;
         this.username = username;
@@ -20,23 +21,28 @@ public class DbProperties {
         this.maxPoolSize = maxPoolSize;
     }
 
-    public String getUrl() {
+    @Override
+    public String url() {
         return url;
     }
 
-    public String getSchema() {
+    @Override
+    public String schema() {
         return schema;
     }
 
-    public String getUsername() {
+    @Override
+    public String username() {
         return username;
     }
 
-    public String getPassword() {
+    @Override
+    public String password() {
         return password;
     }
 
-    public int getMaxPoolSize() {
+    @Override
+    public int maxPoolSize() {
         return maxPoolSize;
     }
 }

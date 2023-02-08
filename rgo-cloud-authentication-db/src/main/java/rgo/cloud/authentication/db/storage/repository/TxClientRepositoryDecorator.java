@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.storage.repository;
+package rgo.cloud.authentication.db.storage.repository;
 
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;

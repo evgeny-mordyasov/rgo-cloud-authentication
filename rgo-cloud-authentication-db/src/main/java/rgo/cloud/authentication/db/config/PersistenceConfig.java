@@ -1,18 +1,20 @@
-package rgo.cloud.authentication.boot.config;
+package rgo.cloud.authentication.db.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import rgo.cloud.authentication.boot.config.properties.DbProperties;
+import rgo.cloud.authentication.db.api.properties.DbProperties;
 import rgo.cloud.common.spring.storage.DbTxManager;
 
 import javax.sql.DataSource;
 
 @Configuration
+@Import({ NativeRepositoryConfig.class, TxRepositoryConfig.class })
 public class PersistenceConfig {
 
     @Bean
@@ -29,11 +31,11 @@ public class PersistenceConfig {
     @Profile("!test")
     public DataSource pg(DbProperties dbProp) {
         HikariConfig hk = new HikariConfig();
-        hk.setJdbcUrl(dbProp.getUrl());
-        hk.setSchema(dbProp.getSchema());
-        hk.setUsername(dbProp.getUsername());
-        hk.setPassword(dbProp.getPassword());
-        hk.setMaximumPoolSize(dbProp.getMaxPoolSize());
+        hk.setJdbcUrl(dbProp.url());
+        hk.setSchema(dbProp.schema());
+        hk.setUsername(dbProp.username());
+        hk.setPassword(dbProp.password());
+        hk.setMaximumPoolSize(dbProp.maxPoolSize());
 
         return new HikariDataSource(hk);
     }

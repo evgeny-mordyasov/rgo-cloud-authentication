@@ -30,13 +30,13 @@
             <groupId>ru.gold.ordance</groupId>
             <artifactId>rgo-cloud-authentication-mail-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.gold.ordance</groupId>
+            <artifactId>rgo-cloud-authentication-db</artifactId>
+        </dependency>
         <!-- self module -->
 
         <!-- rgo-cloud -->
-        <dependency>
-            <groupId>ru.gold.ordance</groupId>
-            <artifactId>rgo-cloud-common-spring</artifactId>
-        </dependency>
         <dependency>
             <groupId>ru.gold.ordance</groupId>
             <artifactId>rgo-cloud-security-config</artifactId>
@@ -51,10 +51,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

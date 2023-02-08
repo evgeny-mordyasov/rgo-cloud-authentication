@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.storage.repository.natural.mapper;
+package rgo.cloud.authentication.db.storage.repository.natural.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import rgo.cloud.authentication.db.api.entity.Client;

@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.storage.query;
+package rgo.cloud.authentication.db.storage.query;
 
 public final class ClientQuery {
     private static final String TABLE_NAME = "client";

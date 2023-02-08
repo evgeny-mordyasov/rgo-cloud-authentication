@@ -15,6 +15,7 @@
         <module>rgo-cloud-authentication-rest-api</module>
         <module>rgo-cloud-authentication-db-api</module>
         <module>rgo-cloud-authentication-mail-api</module>
+        <module>rgo-cloud-authentication-db</module>
     </modules>
 
     <properties>
@@ -58,6 +59,11 @@
             <dependency>
                 <groupId>ru.gold.ordance</groupId>
                 <artifactId>rgo-cloud-authentication-db-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.gold.ordance</groupId>
+                <artifactId>rgo-cloud-authentication-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- self module -->

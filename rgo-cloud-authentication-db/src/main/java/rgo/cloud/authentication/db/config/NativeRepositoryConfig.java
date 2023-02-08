@@ -1,9 +1,9 @@
-package rgo.cloud.authentication.boot.config;
+package rgo.cloud.authentication.db.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rgo.cloud.authentication.boot.storage.repository.natural.PostgresClientRepository;
-import rgo.cloud.authentication.boot.storage.repository.natural.PostgresConfirmationTokenRepository;
+import rgo.cloud.authentication.db.storage.repository.natural.PostgresClientRepository;
+import rgo.cloud.authentication.db.storage.repository.natural.PostgresConfirmationTokenRepository;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.common.spring.storage.DbTxManager;

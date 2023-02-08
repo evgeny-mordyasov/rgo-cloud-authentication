@@ -1,9 +1,9 @@
-package rgo.cloud.authentication.boot.storage.repository.natural;
+package rgo.cloud.authentication.db.storage.repository.natural;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import rgo.cloud.authentication.boot.storage.query.ConfirmationTokenQuery;
+import rgo.cloud.authentication.db.storage.query.ConfirmationTokenQuery;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.common.spring.storage.DbTxManager;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static rgo.cloud.authentication.boot.storage.repository.natural.mapper.ConfirmationTokenMapper.mapper;
+import static rgo.cloud.authentication.db.storage.repository.natural.mapper.ConfirmationTokenMapper.mapper;
 import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 
 @Slf4j
