@@ -9,7 +9,7 @@ import rgo.cloud.common.api.rest.Response;
 import rgo.cloud.common.spring.annotation.Transactional;
 import rgo.cloud.common.spring.annotation.Validate;
 
-import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
+import static rgo.cloud.authentication.rest.converter.ClientConverter.convert;
 
 @Validate
 public class AuthorizationFacadeDecorator {

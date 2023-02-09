@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot.api.decorator.converter;
+package rgo.cloud.authentication.rest.converter;
 
 import rgo.cloud.authentication.rest.api.authorization.HiddenClient;
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignInRequest;

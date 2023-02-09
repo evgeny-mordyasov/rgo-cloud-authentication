@@ -13,7 +13,7 @@ import rgo.cloud.common.spring.annotation.Validate;
 
 import java.util.Optional;
 
-import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
+import static rgo.cloud.authentication.rest.converter.ClientConverter.convert;
 
 @Validate
 public class ClientServiceDecorator {

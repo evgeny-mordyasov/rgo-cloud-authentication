@@ -17,7 +17,7 @@ import rgo.cloud.security.config.jwt.JwtProvider;
 
 import java.util.Optional;
 
-import static rgo.cloud.authentication.boot.api.decorator.converter.ClientConverter.convert;
+import static rgo.cloud.authentication.rest.converter.ClientConverter.convert;
 import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 
 @Slf4j
