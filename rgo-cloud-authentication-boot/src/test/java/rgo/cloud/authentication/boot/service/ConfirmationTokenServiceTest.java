@@ -44,7 +44,7 @@ public class ConfirmationTokenServiceTest extends CommonTest {
     public void findByClientIdAndToken_empty() {
         long fakeClientId = generateId();
 
-        Optional<ConfirmationToken> token = service.findByClientIdAndToken(fakeClientId);
+        Optional<ConfirmationToken> token = service.findByClientId(fakeClientId);
 
         assertTrue(token.isEmpty());
     }
@@ -54,7 +54,7 @@ public class ConfirmationTokenServiceTest extends CommonTest {
         Client client = clientRepository.save(createRandomClient());
         ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client, config.getTokenLength()));
 
-        Optional<ConfirmationToken> found = service.findByClientIdAndToken(client.getEntityId());
+        Optional<ConfirmationToken> found = service.findByClientId(client.getEntityId());
 
         assertTrue(found.isPresent());
         assertEquals(saved.getEntityId(), found.get().getEntityId());

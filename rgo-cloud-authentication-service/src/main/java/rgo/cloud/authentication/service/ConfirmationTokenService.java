@@ -17,7 +17,7 @@ public class ConfirmationTokenService {
         this.config = config;
     }
 
-    public Optional<ConfirmationToken> findByClientIdAndToken(Long clientId) {
+    public Optional<ConfirmationToken> findByClientId(Long clientId) {
         return repository.findByClientId(clientId);
     }
 

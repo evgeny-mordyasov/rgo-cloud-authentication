@@ -10,7 +10,6 @@ public class TxConfirmationTokenRepositoryDecorator implements ConfirmationToken
     private final ConfirmationTokenRepository delegate;
     private final DbTxManager tx;
 
-
     public TxConfirmationTokenRepositoryDecorator(ConfirmationTokenRepository delegate, DbTxManager tx) {
         this.delegate = delegate;
         this.tx = tx;

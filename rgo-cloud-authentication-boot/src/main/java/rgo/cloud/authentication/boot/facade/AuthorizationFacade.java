@@ -92,7 +92,7 @@ public class AuthorizationFacade {
     }
 
     public void confirmAccount(Long clientId, String token) {
-        Optional<ConfirmationToken> opt = tokenService.findByClientIdAndToken(clientId);
+        Optional<ConfirmationToken> opt = tokenService.findByClientId(clientId);
 
         if (opt.isEmpty()) {
             String errorMsg = "The client was not found during activation.";
@@ -116,13 +116,7 @@ public class AuthorizationFacade {
     }
 
     private void activeClient(Long clientId) {
-        Optional<Client> opt = clientService.findById(clientId);
-
-        if (opt.isEmpty()) {
-            unpredictableError("The client was not found during activation.");
-        }
-
-        clientService.updateStatus(opt.get().getEntityId(), true);
+        clientService.updateStatus(clientId, true);
     }
 
     public void resend(Long clientId) {
