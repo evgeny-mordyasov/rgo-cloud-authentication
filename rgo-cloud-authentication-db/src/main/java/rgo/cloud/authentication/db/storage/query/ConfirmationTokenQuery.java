@@ -23,8 +23,8 @@ public final class ConfirmationTokenQuery {
                 "       c.role AS client_role " +
                 "FROM " + TABLE_NAME + " AS cf " +
                 "JOIN client AS c " +
-                "   ON cf.client_id = c.entity_id " +
-                "WHERE client_id = :client_id";
+                "   ON cf.client_id = c.entity_id" +
+                "      AND c.entity_id = :client_id";
     }
 
     public static String save() {

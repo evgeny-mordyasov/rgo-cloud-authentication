@@ -19,6 +19,8 @@ import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -124,20 +126,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .mail(randomString())
                 .password(randomString())
                 .build();
-
-        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_UP)
-                .content(toJson(rq))
-                .contentType(JSON))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
-                .andExpect(jsonPath("$.status.description", nullValue()))
-                .andExpect(jsonPath("$.object", notNullValue()))
-                .andExpect(jsonPath("$.object.surname", is(rq.getSurname())))
-                .andExpect(jsonPath("$.object.name", is(rq.getName())))
-                .andExpect(jsonPath("$.object.patronymic", is(rq.getPatronymic())))
-                .andExpect(jsonPath("$.object.mail", is(rq.getMail())))
-                .andExpect(jsonPath("$.object.role", is(Role.USER.name())))
-                .andExpect(jsonPath("$.object.active", is(false)));
+        signUp(rq);
 
         Optional<Client> opt = clientRepository.findByMail(rq.getMail());
         assertTrue(opt.isPresent());
@@ -159,7 +148,72 @@ public class AuthorizationRestControllerTest extends CommonTest {
     }
 
     @Test
-    public void confirmAccount_clientId() throws Exception {
+    public void confirmAccount_manyClients() throws Exception {
+        initClients();
+        AuthorizationSignUpRequest rq = AuthorizationSignUpRequest.builder()
+                .surname(randomString())
+                .name(randomString())
+                .patronymic(randomString())
+                .mail(randomString())
+                .password(randomString())
+                .build();
+        signUp(rq);
+
+        Optional<Client> opt = clientRepository.findByMail(rq.getMail());
+        assertTrue(opt.isPresent());
+        assertFalse(opt.get().isActive());
+
+        Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
+        assertTrue(optToken.isPresent());
+
+        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
+                .param("clientId", Long.toString(opt.get().getEntityId()))
+                .param("token", optToken.get().getToken()))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
+                .andExpect(jsonPath("$.status.description", nullValue()));
+
+        Optional<Client> activated = clientRepository.findByMail(rq.getMail());
+        assertTrue(activated.isPresent());
+        assertTrue(activated.get().isActive());
+    }
+
+    private void initClients() {
+        int clients = ThreadLocalRandom.current().nextInt(1, 25);
+
+        IntStream.range(0, clients).forEach(i -> {
+            try {
+                AuthorizationSignUpRequest rq = AuthorizationSignUpRequest.builder()
+                        .surname(randomString())
+                        .name(randomString())
+                        .patronymic(randomString())
+                        .mail(randomString())
+                        .password(randomString())
+                        .build();
+
+               signUp(rq);
+            } catch (Exception ignored) {}
+        });
+    }
+
+    private void signUp(AuthorizationSignUpRequest rq) throws Exception {
+        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_UP)
+                .content(toJson(rq))
+                .contentType(JSON))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
+                .andExpect(jsonPath("$.status.description", nullValue()))
+                .andExpect(jsonPath("$.object", notNullValue()))
+                .andExpect(jsonPath("$.object.surname", is(rq.getSurname())))
+                .andExpect(jsonPath("$.object.name", is(rq.getName())))
+                .andExpect(jsonPath("$.object.patronymic", is(rq.getPatronymic())))
+                .andExpect(jsonPath("$.object.mail", is(rq.getMail())))
+                .andExpect(jsonPath("$.object.role", is(Role.USER.name())))
+                .andExpect(jsonPath("$.object.active", is(false)));
+    }
+
+    @Test
+    public void confirmAccount_clientIdIsFake() throws Exception {
         long clientId = generateId();
         String token = randomString();
         String errorMessage = "The client was not found during activation.";

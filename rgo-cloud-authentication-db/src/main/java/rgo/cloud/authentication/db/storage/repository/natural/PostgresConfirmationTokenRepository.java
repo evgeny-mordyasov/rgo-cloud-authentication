@@ -26,17 +26,18 @@ public class PostgresConfirmationTokenRepository implements ConfirmationTokenRep
     @Override
     public Optional<ConfirmationToken> findByClientId(Long clientId) {
         MapSqlParameterSource params = new MapSqlParameterSource("client_id", clientId);
-        return first(
-                jdbc.query(ConfirmationTokenQuery.findByClientId(), params, mapper));
-    }
+        List<ConfirmationToken> tokens = jdbc.query(ConfirmationTokenQuery.findByClientId(), params, mapper);
 
-    private Optional<ConfirmationToken> first(List<ConfirmationToken> list) {
-        if (list.isEmpty()) {
+        if (tokens.size() == 0) {
             log.info("The token not found.");
             return Optional.empty();
         }
 
-        return Optional.of(list.get(0));
+        if (tokens.size() > 1) {
+            unpredictableError("Find token by clientId failed: " + tokens.size() + " found tokens.");
+        }
+
+        return Optional.of(tokens.get(0));
     }
 
     @Override
