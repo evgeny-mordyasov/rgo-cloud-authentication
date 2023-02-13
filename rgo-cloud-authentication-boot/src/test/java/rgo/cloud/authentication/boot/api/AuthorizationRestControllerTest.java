@@ -18,6 +18,7 @@ import rgo.cloud.common.api.rest.StatusCode;
 import rgo.cloud.common.spring.test.CommonTest;
 import rgo.cloud.security.config.util.Endpoint;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static rgo.cloud.authentication.boot.EntityGenerator.*;
 import static rgo.cloud.common.api.util.JsonUtil.toJson;
-import static rgo.cloud.common.api.util.RequestUtil.JSON;
+import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
 import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
@@ -237,6 +238,23 @@ public class AuthorizationRestControllerTest extends CommonTest {
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(savedClient.getEntityId()))
                 .param("token", token))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.ILLEGAL_STATE.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+    }
+
+    @Test
+    public void confirmAccount_tokenIsExpired() throws Exception {
+        String errorMessage = "The token is expired.";
+        LocalDateTime expireDate = LocalDateTime.now()
+                .minusHours(1);
+
+        Client savedClient = clientRepository.save(createRandomClient());
+        ConfirmationToken token = tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength(), expireDate));
+
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
+                .param("clientId", Long.toString(savedClient.getEntityId()))
+                .param("token", token.getToken()))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ILLEGAL_STATE.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));

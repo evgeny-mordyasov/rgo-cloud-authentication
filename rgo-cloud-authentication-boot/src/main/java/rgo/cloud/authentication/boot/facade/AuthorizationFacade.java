@@ -109,7 +109,7 @@ public class AuthorizationFacade {
         if (opt.get().isExpired()) {
             String errorMsg = "The token is expired.";
             log.error(errorMsg);
-            throw new BannedException(errorMsg);
+            throw new IllegalStateException(errorMsg);
         }
 
         activeClient(clientId);

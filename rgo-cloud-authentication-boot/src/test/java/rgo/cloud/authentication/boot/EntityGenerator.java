@@ -27,6 +27,14 @@ public final class EntityGenerator {
                 .build();
     }
 
+    public static ConfirmationToken createRandomFullConfirmationToken(Client client, int tokenLength, LocalDateTime date) {
+        return ConfirmationToken.builder()
+                .token(generateToken(tokenLength))
+                .client(client)
+                .expiryDate(date)
+                .build();
+    }
+
     private static String generateToken(int tokenLength) {
         return RandomStringUtils.randomNumeric(tokenLength);
     }

@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static rgo.cloud.common.api.util.RequestUtil.JSON;
+import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 
 @SpringBootTest
 @WebAppConfiguration

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static rgo.cloud.common.api.util.JsonUtil.toJson;
-import static rgo.cloud.common.api.util.RequestUtil.JSON;
+import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
 import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
@@ -51,7 +51,7 @@ public class ClientRestControllerPermitTest extends CommonTest {
     }
 
     @Test
-    public void update_forbidden_anonymous() throws Exception {
+    public void update_unauthorized_anonymous() throws Exception {
         ClientUpdateRequest rq = ClientUpdateRequest.builder()
                 .entityId(generateId())
                 .surname(randomString())
@@ -64,7 +64,7 @@ public class ClientRestControllerPermitTest extends CommonTest {
                 .content(toJson(rq))
                 .contentType(JSON))
                 .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.FORBIDDEN.name())));
+                .andExpect(jsonPath("$.status.code", is(StatusCode.UNAUTHORIZED.name())));
     }
 
     @Test
