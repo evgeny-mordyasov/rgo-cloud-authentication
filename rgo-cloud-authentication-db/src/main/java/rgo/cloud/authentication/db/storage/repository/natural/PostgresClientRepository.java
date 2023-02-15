@@ -111,7 +111,7 @@ public class PostgresClientRepository implements ClientRepository {
         MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
                 "entity_id", entityId,
                 "lmd", LocalDateTime.now(ZoneOffset.UTC),
-                "active", status));
+                "is_verified", status));
 
         int result = jdbc.update(ClientQuery.updateStatus(), params);
         if (result != 1) {

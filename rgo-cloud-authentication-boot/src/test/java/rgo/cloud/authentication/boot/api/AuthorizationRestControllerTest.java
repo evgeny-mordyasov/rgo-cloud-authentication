@@ -77,7 +77,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.object.patronymic", is(rq.getPatronymic())))
                 .andExpect(jsonPath("$.object.mail", is(rq.getMail())))
                 .andExpect(jsonPath("$.object.role", is(Role.USER.name())))
-                .andExpect(jsonPath("$.object.active", is(false)));
+                .andExpect(jsonPath("$.object.verified", is(false)));
     }
 
     @Test
@@ -131,7 +131,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
         Optional<Client> opt = clientRepository.findByMail(rq.getMail());
         assertTrue(opt.isPresent());
-        assertFalse(opt.get().isActive());
+        assertFalse(opt.get().isVerified());
 
         Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
         assertTrue(optToken.isPresent());
@@ -145,7 +145,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
         Optional<Client> activated = clientRepository.findByMail(rq.getMail());
         assertTrue(activated.isPresent());
-        assertTrue(activated.get().isActive());
+        assertTrue(activated.get().isVerified());
     }
 
     @Test
@@ -162,7 +162,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
         Optional<Client> opt = clientRepository.findByMail(rq.getMail());
         assertTrue(opt.isPresent());
-        assertFalse(opt.get().isActive());
+        assertFalse(opt.get().isVerified());
 
         Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
         assertTrue(optToken.isPresent());
@@ -176,7 +176,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
         Optional<Client> activated = clientRepository.findByMail(rq.getMail());
         assertTrue(activated.isPresent());
-        assertTrue(activated.get().isActive());
+        assertTrue(activated.get().isVerified());
     }
 
     private void initClients() {
@@ -210,14 +210,14 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.object.patronymic", is(rq.getPatronymic())))
                 .andExpect(jsonPath("$.object.mail", is(rq.getMail())))
                 .andExpect(jsonPath("$.object.role", is(Role.USER.name())))
-                .andExpect(jsonPath("$.object.active", is(false)));
+                .andExpect(jsonPath("$.object.verified", is(false)));
     }
 
     @Test
     public void confirmAccount_clientIdIsFake() throws Exception {
         long clientId = generateId();
         String token = randomString();
-        String errorMessage = "The client was not found during activation.";
+        String errorMessage = "The client was not found during verification.";
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(clientId))
@@ -292,12 +292,12 @@ public class AuthorizationRestControllerTest extends CommonTest {
     public void resendToken_clientAlreadyActivated() throws Exception {
         Client savedClient = clientRepository.save(createRandomClient());
         clientRepository.updateStatus(savedClient.getEntityId(), true);
-        String errorMessage = "The client already activated.";
+        String errorMessage = "The client already verified.";
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
                 .param("clientId", Long.toString(savedClient.getEntityId())))
                 .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.ALREADY_ACTIVATED.name())))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.ALREADY_VERIFIED.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
 
@@ -320,7 +320,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
     @Test
     public void resetPassword_clientNotActivated() throws Exception {
         Client saved = clientRepository.save(createRandomClient());
-        String errorMessage = "The client is not activated.";
+        String errorMessage = "The client is not verified.";
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESET_PASSWORD)
                 .param("mail", saved.getMail()))

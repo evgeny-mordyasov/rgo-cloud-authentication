@@ -17,7 +17,7 @@ public final class ClientMapper {
             .password(rs.getString("PASSWORD"))
             .createdDate(rs.getTimestamp("CREATED_DATE").toLocalDateTime())
             .lastModifiedDate(rs.getTimestamp("LAST_MODIFIED_DATE").toLocalDateTime())
-            .isActive(rs.getBoolean("IS_ACTIVE"))
+            .isVerified(rs.getBoolean("IS_VERIFIED"))
             .role(Role.valueOf(rs.getString("ROLE")))
             .build();
 }

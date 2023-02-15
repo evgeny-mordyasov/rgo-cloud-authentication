@@ -84,7 +84,7 @@ public class ClientRepositoryTest extends CommonTest {
         assertEquals(saved.getPassword(), found.get().getPassword());
         assertEquals(saved.getCreatedDate(), found.get().getCreatedDate());
         assertEquals(saved.getLastModifiedDate(), found.get().getLastModifiedDate());
-        assertFalse(saved.isActive());
+        assertFalse(saved.isVerified());
         assertEquals(saved.getRole(), found.get().getRole());
     }
 
@@ -112,7 +112,7 @@ public class ClientRepositoryTest extends CommonTest {
         assertEquals(saved.getPassword(), found.get().getPassword());
         assertEquals(saved.getCreatedDate(), found.get().getCreatedDate());
         assertEquals(saved.getLastModifiedDate(), found.get().getLastModifiedDate());
-        assertFalse(saved.isActive());
+        assertFalse(saved.isVerified());
         assertEquals(saved.getRole(), found.get().getRole());
     }
 
@@ -127,7 +127,7 @@ public class ClientRepositoryTest extends CommonTest {
         assertEquals(created.getPatronymic(), saved.getPatronymic());
         assertEquals(created.getMail(), saved.getMail());
         assertEquals(created.getPassword(), saved.getPassword());
-        assertFalse(saved.isActive());
+        assertFalse(saved.isVerified());
         assertEquals(Role.USER, saved.getRole());
     }
 
@@ -151,14 +151,14 @@ public class ClientRepositoryTest extends CommonTest {
         assertEquals(newObj.getPatronymic(), updated.getPatronymic());
         assertEquals(newObj.getMail(), updated.getMail());
         assertEquals(newObj.getPassword(), updated.getPassword());
-        assertEquals(saved.isActive(), updated.isActive());
+        assertEquals(saved.isVerified(), updated.isVerified());
         assertEquals(saved.getRole(), updated.getRole());
     }
 
     @Test
     public void updateStatus_activeIsTrue() {
         Client saved = clientRepository.save(createRandomClient());
-        assertFalse(saved.isActive());
+        assertFalse(saved.isVerified());
 
         Client updated = clientRepository.updateStatus(saved.getEntityId(), true);
 
@@ -168,7 +168,7 @@ public class ClientRepositoryTest extends CommonTest {
         assertEquals(updated.getPatronymic(), updated.getPatronymic());
         assertEquals(updated.getMail(), updated.getMail());
         assertEquals(updated.getPassword(), updated.getPassword());
-        assertTrue(updated.isActive());
+        assertTrue(updated.isVerified());
         assertEquals(saved.getRole(), updated.getRole());
     }
 

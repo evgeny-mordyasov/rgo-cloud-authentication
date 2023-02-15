@@ -22,7 +22,7 @@ public final class ConfirmationTokenMapper {
                     .password(rs.getString("CLIENT_PASSWORD"))
                     .createdDate(rs.getTimestamp("CLIENT_CREATED_DATE").toLocalDateTime())
                     .lastModifiedDate(rs.getTimestamp("CLIENT_LAST_MODIFIED_DATE").toLocalDateTime())
-                    .isActive(rs.getBoolean("CLIENT_IS_ACTIVE"))
+                    .isVerified(rs.getBoolean("CLIENT_IS_VERIFIED"))
                     .role(Role.of(rs.getString("CLIENT_ROLE")))
                     .build())
             .build();

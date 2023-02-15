@@ -19,7 +19,7 @@ public final class ConfirmationTokenQuery {
                 "       c.password AS client_password, " +
                 "       c.created_date AS client_created_date, " +
                 "       c.last_modified_date AS client_last_modified_date, " +
-                "       c.is_active AS client_is_active, " +
+                "       c.is_verified AS client_is_verified, " +
                 "       c.role AS client_role " +
                 "FROM " + TABLE_NAME + " AS cf " +
                 "JOIN client AS c " +

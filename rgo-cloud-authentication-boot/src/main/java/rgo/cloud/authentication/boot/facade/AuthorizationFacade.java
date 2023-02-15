@@ -87,7 +87,7 @@ public class AuthorizationFacade {
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
             throw new UnauthorizedException("The request contains invalid user data.");
         } catch (LockedException e) {
-            throw new BannedException("The client is not activated.");
+            throw new BannedException("The client is not verified.");
         }
     }
 
@@ -95,7 +95,7 @@ public class AuthorizationFacade {
         Optional<ConfirmationToken> opt = tokenService.findByClientId(clientId);
 
         if (opt.isEmpty()) {
-            String errorMsg = "The client was not found during activation.";
+            String errorMsg = "The client was not found during verification.";
             log.error(errorMsg);
             throw new EntityNotFoundException(errorMsg);
         }
@@ -112,10 +112,10 @@ public class AuthorizationFacade {
             throw new IllegalStateException(errorMsg);
         }
 
-        activeClient(clientId);
+        verifyClient(clientId);
     }
 
-    private void activeClient(Long clientId) {
+    private void verifyClient(Long clientId) {
         clientService.updateStatus(clientId, true);
     }
 
@@ -128,10 +128,10 @@ public class AuthorizationFacade {
             throw new EntityNotFoundException(msg);
         }
 
-        if (opt.get().isActive()) {
-            String msg = "The client already activated.";
+        if (opt.get().isVerified()) {
+            String msg = "The client already verified.";
             log.error(msg);
-            throw new ClientAlreadyActivatedException(msg);
+            throw new ClientAlreadyVerifiedException(msg);
         }
 
         ConfirmationToken token = updateToken(opt.get());
@@ -148,8 +148,8 @@ public class AuthorizationFacade {
 
     public void resetPassword(String mail) {
         clientService.findByMail(mail).ifPresent(client -> {
-            if (!client.isActive()) {
-                String errorMsg = "The client is not activated.";
+            if (!client.isVerified()) {
+                String errorMsg = "The client is not verified.";
                 log.error(errorMsg);
                 throw new BannedException(errorMsg);
             }

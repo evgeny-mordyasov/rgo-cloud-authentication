@@ -47,7 +47,7 @@ public final class ClientConverter {
                 .createdDate(client.getCreatedDate())
                 .lastModifiedDate(client.getLastModifiedDate())
                 .role(client.getRole())
-                .isActive(client.isActive())
+                .isVerified(client.isVerified())
                 .build();
     }
 }

@@ -100,7 +100,7 @@ public class ClientServiceTest extends CommonTest {
         assertEquals(created.getPatronymic(), saved.getPatronymic());
         assertEquals(created.getMail(), saved.getMail());
         assertTrue(encoder.matches(created.getPassword(), saved.getPassword()));
-        assertFalse(saved.isActive());
+        assertFalse(saved.isVerified());
         assertEquals(Role.USER, saved.getRole());
     }
 
@@ -133,7 +133,7 @@ public class ClientServiceTest extends CommonTest {
         assertEquals(newObj.getMail(), updated.getMail());
         assertTrue(encoder.matches(newObj.getPassword(), updated.getPassword()));
         assertTrue(saved.getLastModifiedDate().isBefore(updated.getLastModifiedDate().plus(7, ChronoUnit.HOURS)));
-        assertEquals(saved.isActive(), updated.isActive());
+        assertEquals(saved.isVerified(), updated.isVerified());
         assertEquals(saved.getRole(), updated.getRole());
     }
 
@@ -159,7 +159,7 @@ public class ClientServiceTest extends CommonTest {
         Client updated = service.updateStatus(saved.getEntityId(), true);
 
         assertEquals(newObj.getEntityId(), updated.getEntityId());
-        assertTrue(updated.isActive());
+        assertTrue(updated.isVerified());
     }
 
     @Test

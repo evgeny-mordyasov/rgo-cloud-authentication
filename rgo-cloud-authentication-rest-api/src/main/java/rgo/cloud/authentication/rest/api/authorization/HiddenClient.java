@@ -19,5 +19,5 @@ public class HiddenClient {
     private final Role role;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
-    private final boolean isActive;
+    private final boolean isVerified;
 }

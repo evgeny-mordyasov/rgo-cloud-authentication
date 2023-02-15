@@ -37,7 +37,7 @@ public final class ClientQuery {
 
     public static String updateStatus() {
         return  "UPDATE " + TABLE_NAME + " " +
-                "SET is_active = :active, " +
+                "SET is_verified = :is_verified, " +
                 "    last_modified_date = :lmd " +
                 "WHERE entity_id = :entity_id";
     }
