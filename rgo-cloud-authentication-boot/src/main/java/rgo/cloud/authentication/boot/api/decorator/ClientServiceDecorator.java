@@ -25,22 +25,20 @@ public class ClientServiceDecorator {
 
     public Response findById(ClientGetByIdRequest rq) {
         Optional<Client> opt = service.findById(rq.getEntityId());
-        return resolve(opt);
+        return opt.isPresent()
+                ? ClientGetEntityResponse.success(convert(opt.get()))
+                : new EmptySuccessfulResponse();
     }
 
     public Response findByMail(ClientGetByMailRequest rq) {
         Optional<Client> opt = service.findByMail(rq.getMail());
-        return resolve(opt);
+        return opt.isPresent()
+                ? ClientGetEntityResponse.success(opt.get())
+                : new EmptySuccessfulResponse();
     }
 
     public ClientUpdateResponse update(ClientUpdateRequest rq) {
         Client client = service.update(convert(rq));
-        return ClientUpdateResponse.success(client);
-    }
-
-    private static Response resolve(Optional<Client> found) {
-        return found.isPresent()
-                ? ClientGetEntityResponse.success(found.get())
-                : new EmptySuccessfulResponse();
+        return ClientUpdateResponse.success(convert(client));
     }
 }
