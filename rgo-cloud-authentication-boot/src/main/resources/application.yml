@@ -12,7 +12,7 @@ module-properties:
       secret: ru.gold.ordance
   mail:
     sender: course.paper.asu@mail.ru
-    password: vXX6Aas5ErCy9ndrTVPU
+    password: sDmFhEdgzPQ7ShUwSNHs
     host: smtp.mail.ru
     port: 465
     protocol: smtps
