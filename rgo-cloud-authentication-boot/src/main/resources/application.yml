@@ -17,6 +17,9 @@ module-properties:
     port: 465
     protocol: smtps
     maxPoolSize: 10
+  entry-failed:
+    maxFailedAttempts: 7
+    blockTimeMs: 900000
   persistence:
     url: jdbc:postgresql://common-db:5432/auth
     schema: auth

@@ -2,6 +2,7 @@ package rgo.cloud.authentication.boot;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import rgo.cloud.authentication.db.api.entity.Client;
+import rgo.cloud.authentication.db.api.entity.ClientEntryFailed;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,12 @@ public final class EntityGenerator {
                 .patronymic(randomString())
                 .mail(randomString())
                 .password(randomString())
+                .build();
+    }
+
+    public static ClientEntryFailed createRandomClientEntryFailed() {
+        return ClientEntryFailed.builder()
+                .mail(randomString())
                 .build();
     }
 }

@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import rgo.cloud.authentication.db.storage.query.ClientQuery;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
-import rgo.cloud.authentication.db.storage.repository.natural.mapper.ClientMapper;
 import rgo.cloud.common.spring.storage.DbTxManager;
 
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
+import static rgo.cloud.authentication.db.storage.repository.natural.mapper.ClientMapper.mapper;
 
 @Slf4j
 public class PostgresClientRepository implements ClientRepository {
@@ -27,7 +27,7 @@ public class PostgresClientRepository implements ClientRepository {
 
     @Override
     public List<Client> findAll() {
-        List<Client> clients = jdbc.query(ClientQuery.findAll(), ClientMapper.mapper);
+        List<Client> clients = jdbc.query(ClientQuery.findAll(), mapper);
         log.info("Size of clients: " + clients.size());
 
         return clients;
@@ -37,14 +37,14 @@ public class PostgresClientRepository implements ClientRepository {
     public Optional<Client> findById(Long entityId) {
         MapSqlParameterSource params = new MapSqlParameterSource("entity_id", entityId);
         return first(
-                jdbc.query(ClientQuery.findById(), params, ClientMapper.mapper));
+                jdbc.query(ClientQuery.findById(), params, mapper));
     }
 
     @Override
     public Optional<Client> findByMail(String mail) {
         MapSqlParameterSource params = new MapSqlParameterSource("mail", mail);
         return first(
-                jdbc.query(ClientQuery.findByMail(), params, ClientMapper.mapper));
+                jdbc.query(ClientQuery.findByMail(), params, mapper));
     }
 
     @Override

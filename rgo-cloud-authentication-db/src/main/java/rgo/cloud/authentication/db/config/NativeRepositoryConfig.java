@@ -2,6 +2,8 @@ package rgo.cloud.authentication.db.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rgo.cloud.authentication.db.api.repository.ClientEntryFailedRepository;
+import rgo.cloud.authentication.db.storage.repository.natural.PostgresClientEntryFailedRepository;
 import rgo.cloud.authentication.db.storage.repository.natural.PostgresClientRepository;
 import rgo.cloud.authentication.db.storage.repository.natural.PostgresConfirmationTokenRepository;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
@@ -19,5 +21,10 @@ public class NativeRepositoryConfig {
     @Bean
     public ClientRepository nativeClientRepository(DbTxManager tx) {
         return new PostgresClientRepository(tx);
+    }
+
+    @Bean
+    public ClientEntryFailedRepository nativeClientEntryFailed(DbTxManager tx) {
+        return new PostgresClientEntryFailedRepository(tx);
     }
 }

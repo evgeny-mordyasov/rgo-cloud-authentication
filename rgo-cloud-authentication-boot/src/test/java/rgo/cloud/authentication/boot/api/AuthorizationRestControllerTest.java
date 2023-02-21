@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
+import rgo.cloud.authentication.db.api.entity.ClientEntryFailed;
+import rgo.cloud.authentication.db.api.repository.ClientEntryFailedRepository;
+import rgo.cloud.authentication.service.config.properties.ClientEntryFailedProperties;
 import rgo.cloud.authentication.service.config.properties.TokenProperties;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
@@ -47,7 +50,13 @@ public class AuthorizationRestControllerTest extends CommonTest {
     private ConfirmationTokenRepository tokenRepository;
 
     @Autowired
+    private ClientEntryFailedRepository clientEntryFailedRepository;
+
+    @Autowired
     private TokenProperties config;
+
+    @Autowired
+    private ClientEntryFailedProperties properties;
 
     @BeforeEach
     public void setUp() {
@@ -119,6 +128,54 @@ public class AuthorizationRestControllerTest extends CommonTest {
     }
 
     @Test
+    public void signIn_blocked() throws Exception {
+        String errorMessage = "The client is blocked.";
+
+        AuthorizationSignUpRequest rq = AuthorizationSignUpRequest.builder()
+                .surname(randomString())
+                .name(randomString())
+                .patronymic(randomString())
+                .mail(randomString())
+                .password(randomString())
+                .build();
+        signUp(rq);
+
+        Optional<Client> opt = clientRepository.findByMail(rq.getMail());
+        assertTrue(opt.isPresent());
+        assertFalse(opt.get().isVerified());
+
+        Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
+        assertTrue(optToken.isPresent());
+
+        confirmAccount(opt.get().getEntityId(), optToken.get().getToken());
+
+        AuthorizationSignInRequest fakeData = AuthorizationSignInRequest.builder()
+                .mail(rq.getMail())
+                .password(randomString())
+                .build();
+
+        for (int i = 0; i < properties.getMaxFailedAttempts() + 1; i++) {
+            mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_IN)
+                    .content(toJson(fakeData))
+                    .contentType(JSON))
+                    .andExpect(content().contentType(JSON))
+                    .andExpect(jsonPath("$.status.code", is(StatusCode.UNAUTHORIZED.name())));
+        }
+
+        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SIGN_IN)
+                .content(toJson(fakeData))
+                .contentType(JSON))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.BANNED.name())))
+                .andExpect(jsonPath("$.status.description", is(errorMessage)));
+
+        Optional<ClientEntryFailed> found = clientEntryFailedRepository.findByMail(rq.getMail());
+
+        assertTrue(found.isPresent());
+        assertEquals(0, found.get().getAttempts());
+    }
+
+    @Test
     public void confirmAccount() throws Exception {
         AuthorizationSignUpRequest rq = AuthorizationSignUpRequest.builder()
                 .surname(randomString())
@@ -136,12 +193,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
         Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
         assertTrue(optToken.isPresent());
 
-        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
-                .param("clientId", Long.toString(opt.get().getEntityId()))
-                .param("token", optToken.get().getToken()))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
-                .andExpect(jsonPath("$.status.description", nullValue()));
+        confirmAccount(opt.get().getEntityId(), optToken.get().getToken());
 
         Optional<Client> activated = clientRepository.findByMail(rq.getMail());
         assertTrue(activated.isPresent());
@@ -167,12 +219,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
         Optional<ConfirmationToken> optToken = tokenRepository.findByClientId(opt.get().getEntityId());
         assertTrue(optToken.isPresent());
 
-        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
-                .param("clientId", Long.toString(opt.get().getEntityId()))
-                .param("token", optToken.get().getToken()))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
-                .andExpect(jsonPath("$.status.description", nullValue()));
+        confirmAccount(opt.get().getEntityId(), optToken.get().getToken());
 
         Optional<Client> activated = clientRepository.findByMail(rq.getMail());
         assertTrue(activated.isPresent());
@@ -211,6 +258,15 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .andExpect(jsonPath("$.object.mail", is(rq.getMail())))
                 .andExpect(jsonPath("$.object.role", is(Role.USER.name())))
                 .andExpect(jsonPath("$.object.verified", is(false)));
+    }
+
+    private void confirmAccount(Long clientId, String token) throws Exception {
+        mvc.perform(post(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
+                .param("clientId", Long.toString(clientId))
+                .param("token", token))
+                .andExpect(content().contentType(JSON))
+                .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
+                .andExpect(jsonPath("$.status.description", nullValue()));
     }
 
     @Test

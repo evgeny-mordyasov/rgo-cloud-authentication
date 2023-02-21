@@ -3,6 +3,8 @@ package rgo.cloud.authentication.boot.facade;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.*;
+import rgo.cloud.authentication.db.api.entity.ClientEntryFailed;
+import rgo.cloud.authentication.service.ClientEntryFailedService;
 import rgo.cloud.authentication.service.ClientService;
 import rgo.cloud.authentication.service.ConfirmationTokenService;
 import rgo.cloud.authentication.mail.MailSender;
@@ -23,17 +25,20 @@ import static rgo.cloud.common.api.util.ExceptionUtil.unpredictableError;
 @Slf4j
 public class AuthorizationFacade {
     private final ClientService clientService;
+    private final ClientEntryFailedService clientEntryFailedService;
     private final ConfirmationTokenService tokenService;
     private final MailSender mailSender;
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
 
     public AuthorizationFacade(ClientService clientService,
+                               ClientEntryFailedService clientEntryFailedService,
                                ConfirmationTokenService tokenService,
                                MailSender mailSender,
                                JwtProvider jwtProvider,
                                AuthenticationManager authenticationManager) {
         this.clientService = clientService;
+        this.clientEntryFailedService = clientEntryFailedService;
         this.tokenService = tokenService;
         this.mailSender = mailSender;
         this.jwtProvider = jwtProvider;
@@ -42,10 +47,18 @@ public class AuthorizationFacade {
 
     public HiddenClient signUp(Client client) {
         Client saved = clientService.save(client);
+        saveClientEntry(client);
+
         ConfirmationToken token = createToken(saved);
         sendToken(token);
 
         return convert(saved);
+    }
+
+    private void saveClientEntry(Client client) {
+        clientEntryFailedService.save(ClientEntryFailed.builder()
+                .mail(client.getMail())
+                .build());
     }
 
     private void sendToken(ConfirmationToken token) {
@@ -80,11 +93,17 @@ public class AuthorizationFacade {
     }
 
     private void authenticate(Client client) {
+        if (clientEntryFailedService.isBlocked(client.getMail())) {
+            throw new BannedException("The client is blocked.");
+        }
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(client.getMail(), client.getPassword()));
 
+            clientEntryFailedService.resetAttempts(client.getMail());
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
+            clientEntryFailedService.updateAttempts(client.getMail());
             throw new UnauthorizedException("The request contains invalid user data.");
         } catch (LockedException e) {
             throw new BannedException("The client is not verified.");

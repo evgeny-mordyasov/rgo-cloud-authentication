@@ -9,6 +9,7 @@ import rgo.cloud.authentication.boot.api.decorator.AuthorizationFacadeDecorator;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
 import rgo.cloud.authentication.boot.facade.AuthorizationFacade;
 import rgo.cloud.authentication.mail.config.MailConfig;
+import rgo.cloud.authentication.service.ClientEntryFailedService;
 import rgo.cloud.authentication.service.ClientService;
 import rgo.cloud.authentication.service.ConfirmationTokenService;
 import rgo.cloud.authentication.mail.MailSender;
@@ -28,12 +29,19 @@ public class ApplicationConfig {
     @Bean
     public AuthorizationFacade authorizationFacade(
             ClientService clientService,
+            ClientEntryFailedService clientEntryFailedService,
             ConfirmationTokenService tokenService,
             MailSender sender,
             JwtProvider jwtProvider,
             AuthenticationManager authenticationManager
     ) {
-        return new AuthorizationFacade(clientService, tokenService, sender, jwtProvider, authenticationManager);
+        return new AuthorizationFacade(
+                clientService,
+                clientEntryFailedService,
+                tokenService,
+                sender,
+                jwtProvider,
+                authenticationManager);
     }
 
     @Bean

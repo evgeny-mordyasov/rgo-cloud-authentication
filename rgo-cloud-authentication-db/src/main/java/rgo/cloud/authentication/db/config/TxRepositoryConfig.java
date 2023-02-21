@@ -2,6 +2,8 @@ package rgo.cloud.authentication.db.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rgo.cloud.authentication.db.api.repository.ClientEntryFailedRepository;
+import rgo.cloud.authentication.db.storage.repository.TxClientEntryFailedRepositoryDecorator;
 import rgo.cloud.authentication.db.storage.repository.TxClientRepositoryDecorator;
 import rgo.cloud.authentication.db.storage.repository.TxConfirmationTokenRepositoryDecorator;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
@@ -19,5 +21,10 @@ public class TxRepositoryConfig {
     @Bean
     public ClientRepository clientRepository(ClientRepository repo, DbTxManager tx) {
         return new TxClientRepositoryDecorator(repo, tx);
+    }
+
+    @Bean
+    public ClientEntryFailedRepository clientEntryFailedRepository(ClientEntryFailedRepository repo, DbTxManager tx) {
+        return new TxClientEntryFailedRepositoryDecorator(repo, tx);
     }
 }
