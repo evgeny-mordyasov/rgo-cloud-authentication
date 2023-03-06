@@ -24,6 +24,5 @@ public class ClientUpdateRequest implements Request {
         errorString(name, "name");
         errorString(patronymic, "patronymic");
         errorString(password, "password");
-        finish();
     }
 }

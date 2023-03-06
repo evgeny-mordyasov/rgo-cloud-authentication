@@ -3,7 +3,8 @@ package rgo.cloud.authentication.rest.api.authorization.request;
 import lombok.*;
 import rgo.cloud.common.api.rest.Request;
 
-import static rgo.cloud.common.api.util.ValidatorUtil.*;
+import static rgo.cloud.common.api.util.ValidatorUtil.errorObjectId;
+import static rgo.cloud.common.api.util.ValidatorUtil.errorString;
 
 @Builder
 @AllArgsConstructor
@@ -18,6 +19,5 @@ public class AuthorizationConfirmAccountRequest implements Request {
     public void validate() {
         errorObjectId(clientId, "clientId");
         errorString(token, "token");
-        finish();
     }
 }
