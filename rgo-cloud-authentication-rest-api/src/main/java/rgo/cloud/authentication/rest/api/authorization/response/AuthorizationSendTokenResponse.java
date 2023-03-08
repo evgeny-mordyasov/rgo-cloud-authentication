@@ -9,11 +9,11 @@ import rgo.cloud.common.api.rest.Status;
 @Builder
 @Getter
 @ToString
-public class AuthorizationResendTokenResponse implements Response {
+public class AuthorizationSendTokenResponse implements Response {
     private final Status status;
 
-    public static AuthorizationResendTokenResponse success() {
-        return AuthorizationResendTokenResponse.builder()
+    public static AuthorizationSendTokenResponse success() {
+        return AuthorizationSendTokenResponse.builder()
                 .status(Status.success())
                 .build();
     }

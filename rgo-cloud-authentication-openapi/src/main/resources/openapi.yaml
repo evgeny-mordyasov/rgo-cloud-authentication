@@ -169,9 +169,9 @@ paths:
               schema:
                 $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
 
-  /api/v1/authorizations/resend-token:
+  /api/v1/authorizations/send-token:
     post:
-      summary: Resend the token to confirm the account
+      summary: Send the token to confirm the account
       tags:
         - Authorization
       requestBody:
@@ -186,20 +186,20 @@ paths:
                   format: int64
       responses:
         '200':
-          description: Successful resend
+          description: Successful send
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationResendTokenResponse'
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationSendTokenResponse'
         '400':
-          description: The passed parameters are not valid (INVALID_RQ) or the client already verified (ALREADY_VERIFIED)
+          description: The passed parameters are not valid
           content:
             application/json;charset=UTF-8:
               schema:
                 $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
               example:
                 status:
-                  code: INVALID_RQ or ALREADY_VERIFIED
+                  code: INVALID_RQ
                   description: ERROR MESSAGE
         '404':
           description: The passed clientId does not exists
@@ -238,7 +238,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationResendTokenResponse'
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationPasswordResetResponse'
         '400':
           description: The passed parameters are not valid
           content:

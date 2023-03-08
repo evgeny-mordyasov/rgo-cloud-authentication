@@ -10,7 +10,7 @@ import static rgo.cloud.common.api.util.ValidatorUtil.errorObjectId;
 @AllArgsConstructor
 @Getter
 @ToString
-public class AuthorizationResendTokenRequest implements Request {
+public class AuthorizationSendTokenRequest implements Request {
     private final Long clientId;
 
     @Override

@@ -317,11 +317,11 @@ public class AuthorizationRestControllerTest extends CommonTest {
     }
 
     @Test
-    public void resendToken() throws Exception {
+    public void sendToken() throws Exception {
         Client savedClient = clientRepository.save(createRandomClient());
         ConfirmationToken savedToken = tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength()));
 
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(savedClient.getEntityId())))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.SUCCESS.name())))
@@ -333,27 +333,14 @@ public class AuthorizationRestControllerTest extends CommonTest {
     }
 
     @Test
-    public void resendToken_clientIdIsFake() throws Exception {
+    public void sendToken_clientIdIsFake() throws Exception {
         long clientId = generateId();
         String errorMessage = "The client not found by clientId.";
 
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(clientId)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())))
-                .andExpect(jsonPath("$.status.description", is(errorMessage)));
-    }
-
-    @Test
-    public void resendToken_clientAlreadyActivated() throws Exception {
-        Client savedClient = clientRepository.save(createRandomClient());
-        clientRepository.updateStatus(savedClient.getEntityId(), true);
-        String errorMessage = "The client already verified.";
-
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
-                .param("clientId", Long.toString(savedClient.getEntityId())))
-                .andExpect(content().contentType(JSON))
-                .andExpect(jsonPath("$.status.code", is(StatusCode.ALREADY_VERIFIED.name())))
                 .andExpect(jsonPath("$.status.description", is(errorMessage)));
     }
 

@@ -138,19 +138,13 @@ public class AuthorizationFacade {
         clientService.updateStatus(clientId, true);
     }
 
-    public void resend(Long clientId) {
+    public void send(Long clientId) {
         Optional<Client> opt = clientService.findById(clientId);
 
         if (opt.isEmpty()) {
             String msg = "The client not found by clientId.";
             log.error(msg);
             throw new EntityNotFoundException(msg);
-        }
-
-        if (opt.get().isVerified()) {
-            String msg = "The client already verified.";
-            log.error(msg);
-            throw new ClientAlreadyVerifiedException(msg);
         }
 
         ConfirmationToken token = updateToken(opt.get());

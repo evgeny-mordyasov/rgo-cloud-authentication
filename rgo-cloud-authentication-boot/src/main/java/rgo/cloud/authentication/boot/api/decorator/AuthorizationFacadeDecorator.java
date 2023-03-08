@@ -37,9 +37,9 @@ public class AuthorizationFacadeDecorator {
     }
 
     @Transactional
-    public Response resend(AuthorizationResendTokenRequest rq) {
-        facade.resend(rq.getClientId());
-        return AuthorizationResendTokenResponse.success();
+    public Response send(AuthorizationSendTokenRequest rq) {
+        facade.send(rq.getClientId());
+        return AuthorizationSendTokenResponse.success();
     }
 
     @Transactional

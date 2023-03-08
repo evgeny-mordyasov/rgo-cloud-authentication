@@ -194,21 +194,21 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
     }
 
     @Test
-    public void resendToken_success_anonymous() throws Exception {
+    public void sendToken_success_anonymous() throws Exception {
         long clientId = generateId();
 
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(clientId)))
                 .andExpect(content().contentType(JSON))
                 .andExpect(jsonPath("$.status.code", is(StatusCode.ENTITY_NOT_FOUND.name())));
     }
 
     @Test
-    public void resendToken_success_client() throws Exception {
+    public void sendToken_success_client() throws Exception {
         String jwt = createJwt(Role.USER);
         long clientId = generateId();
 
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(clientId))
                 .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))
@@ -216,11 +216,11 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
     }
 
     @Test
-    public void resendToken_success_admin() throws Exception {
+    public void sendToken_success_admin() throws Exception {
         String jwt = createJwt(Role.ADMIN);
         long clientId = generateId();
 
-        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.RESEND_TOKEN)
+        mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(clientId))
                 .cookie(new Cookie(config.getAuthCookieName(), jwt)))
                 .andExpect(content().contentType(JSON))

@@ -74,9 +74,9 @@ public class AuthorizationRestController {
                 service.confirmAccount(new AuthorizationConfirmAccountRequest(clientId, token)));
     }
 
-    @PostMapping(value = Endpoint.Authorization.RESEND_TOKEN, produces = JSON)
-    public ResponseEntity<Response> resendToken(@RequestParam("clientId") Long clientId) {
-        return execute(() -> service.resend(new AuthorizationResendTokenRequest(clientId)));
+    @PostMapping(value = Endpoint.Authorization.SEND_TOKEN, produces = JSON)
+    public ResponseEntity<Response> sendToken(@RequestParam("clientId") Long clientId) {
+        return execute(() -> service.send(new AuthorizationSendTokenRequest(clientId)));
     }
 
     @PostMapping(value = Endpoint.Authorization.RESET_PASSWORD, produces = JSON)
