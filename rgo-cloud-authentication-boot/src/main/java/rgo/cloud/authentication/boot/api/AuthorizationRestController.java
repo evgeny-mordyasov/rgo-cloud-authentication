@@ -1,5 +1,6 @@
 package rgo.cloud.authentication.boot.api;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.RequestUtil.execute;
 
+@Hidden
 @RestController
 @RequestMapping(Endpoint.Authorization.BASE_URL)
 public class AuthorizationRestController {

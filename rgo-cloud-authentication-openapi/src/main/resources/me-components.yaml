@@ -1,0 +1,16 @@
+openapi: 3.0.0
+
+info:
+  title: Me components
+  version: 1.0.0
+paths:
+
+components:
+  schemas:
+    ClientGetEntityResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'
+        object:
+          $ref: 'common-components.yaml#/components/schemas/HiddenClient'

@@ -1,0 +1,95 @@
+openapi: 3.0.0
+
+info:
+  title: Me components
+  version: 1.0.0
+paths:
+
+components:
+  schemas:
+    AuthorizedClient:
+      type: object
+      properties:
+        client:
+          $ref: 'common-components.yaml#/components/schemas/HiddenClient'
+        token:
+          type: string
+    AuthorizationSignUpRequest:
+      type: object
+      properties:
+        surname:
+          type: string
+        name:
+          type: string
+        patronymic:
+          type: string
+        mail:
+          type: string
+        password:
+          type: string
+    AuthorizationSignInRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+        password:
+          type: string
+    AuthorizationLogoutResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'
+    AuthorizationSignUpResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'
+        object:
+          $ref: 'common-components.yaml#/components/schemas/HiddenClient'
+      example:
+        status:
+          code: SUCCESS
+          description: null
+        object:
+          entityId: 0
+          surname: string
+          name: string
+          patronymic: string
+          mail: string
+          role: CLIENT
+          createdDate: '2023-03-08T11:43:21.313454'
+          lastModifiedDate: '2023-03-08T11:43:21.313454'
+          verified: false
+    AuthorizationSignInResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'
+        object:
+          $ref: '#/components/schemas/AuthorizedClient'
+      example:
+        status:
+          code: SUCCESS
+          description: null
+        object:
+          client:
+            entityId: 0
+            surname: string
+            name: string
+            patronymic: string
+            mail: string
+            role: CLIENT
+            createdDate: '2023-03-08T11:43:21.313454'
+            lastModifiedDate: '2023-03-08T11:43:21.313454'
+            verified: true
+          token: string
+    AuthorizationConfirmAccountResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'
+    AuthorizationResendTokenResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/Status'

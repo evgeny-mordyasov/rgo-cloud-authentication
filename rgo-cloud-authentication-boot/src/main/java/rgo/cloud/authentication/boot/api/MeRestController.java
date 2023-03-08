@@ -1,5 +1,6 @@
 package rgo.cloud.authentication.boot.api;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rgo.cloud.authentication.boot.api.decorator.ClientServiceDecorator;
@@ -11,6 +12,7 @@ import rgo.cloud.security.config.util.Endpoint;
 import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.RequestUtil.execute;
 
+@Hidden
 @RestController
 @RequestMapping(Endpoint.Me.BASE_URL)
 public class MeRestController {

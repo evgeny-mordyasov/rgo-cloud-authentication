@@ -1,0 +1,370 @@
+openapi: 3.0.0
+info:
+  title: API
+  description: This is the application API
+  version: 1.0.0
+paths:
+  /api/v1/authorizations/logout:
+    get:
+      summary: Logout
+      tags:
+        - Authorization
+      responses:
+        '200':
+          description: Successful logout
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationLogoutResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/authorizations/sign-up:
+    post:
+      summary: Sign up
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: 'authorization-components.yaml#/components/schemas/AuthorizationSignUpRequest'
+      responses:
+        '200':
+          description: Successful sign up
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationSignUpResponse'
+        '400':
+          description: The passed parameters are not valid (INVALID_RQ) or mail already has exists (VIOLATES_CONSTRAINT)
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ or VIOLATES_CONSTRAINT
+                  description: ERROR MESSAGE
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/authorizations/sign-in:
+    post:
+      summary: Sign in
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: 'authorization-components.yaml#/components/schemas/AuthorizationSignUpRequest'
+      responses:
+        '200':
+          description: Successful sign in
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationSignInResponse'
+          headers:
+            Set-Cookie:
+              description: AUTH_TOKEN=string
+              schema:
+                type: string
+        '400':
+          description: The passed parameters are not valid
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ
+                  description: ERROR MESSAGE
+        '401':
+          description: The request contains invalid user data
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: UNAUTHORIZED
+                  description: string
+        '403':
+          description: The client is not verified or blocked
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: BANNED
+                  description: string
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/authorizations/confirm-account:
+    post:
+      summary: Verify account
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: integer
+                  format: int64
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Successful confirmation
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationConfirmAccountResponse'
+        '400':
+          description: The passed parameters are not valid (INVALID_RQ); the token is invalid or expired (ILLEGAL_STATE)
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ or ILLEGAL_STATE
+                  description: ERROR MESSAGE
+        '404':
+          description: The passed clientId does not exists
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: ENTITY_NOT_FOUND
+                  description: ERROR MESSAGE
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/authorizations/resend-token:
+    post:
+      summary: Resend the token to confirm the account
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: integer
+                  format: int64
+      responses:
+        '200':
+          description: Successful resend
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationResendTokenResponse'
+        '400':
+          description: The passed parameters are not valid (INVALID_RQ) or the client already verified (ALREADY_VERIFIED)
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ or ALREADY_VERIFIED
+                  description: ERROR MESSAGE
+        '404':
+          description: The passed clientId does not exists
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: ENTITY_NOT_FOUND
+                  description: ERROR MESSAGE
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/authorizations/reset-password:
+    post:
+      summary: Reset your password to restore your account
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                mail:
+                  type: string
+      responses:
+        '200':
+          description: Successful reset password
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'authorization-components.yaml#/components/schemas/AuthorizationResendTokenResponse'
+        '400':
+          description: The passed parameters are not valid
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ
+                  description: ERROR MESSAGE
+        '403':
+          description: The client is not verified
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: BANNED
+                  description: string
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+
+  /api/v1/me/{clientId}:
+    get:
+      summary: Get client by clientId
+      tags:
+        - Me
+      parameters:
+        - name: clientId
+          in: path
+          description: This is the client identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: The client found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                oneOf:
+                  - $ref: 'me-components.yaml#/components/schemas/ClientGetEntityResponse'
+                  - $ref: 'common-components.yaml#/components/schemas/EmptySuccessfulResponse'
+        '400':
+          description: The passed parameters are not valid
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ
+                  description: ERROR MESSAGE
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+  /api/v1/clients:
+    put:
+      summary: Update client
+      tags:
+        - Client
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: 'client-components.yaml#/components/schemas/ClientUpdateRequest'
+      responses:
+        '200':
+          description: The client saved
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'client-components.yaml#/components/schemas/ClientUpdateResponse'
+        '400':
+          description: The passed parameters are not valid
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: INVALID_RQ
+                  description: ERROR MESSAGE
+        '401':
+          description: The AUTH_TOKEN cookie is missing
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: UNAUTHORIZED
+                  description: null
+        '403':
+          description: Access denied
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: FORBIDDEN
+                  description: null
+        '404':
+          description: The client by entityId not found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
+              example:
+                status:
+                  code: ENTITY_NOT_FOUND
+                  description: ERROR MESSAGE
+        '500':
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: 'common-components.yaml#/components/schemas/BaseErrorResponse'
