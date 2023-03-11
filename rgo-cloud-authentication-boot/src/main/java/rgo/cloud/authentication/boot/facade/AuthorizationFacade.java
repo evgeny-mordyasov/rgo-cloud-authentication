@@ -50,7 +50,7 @@ public class AuthorizationFacade {
         saveClientEntry(client);
 
         ConfirmationToken token = createToken(saved);
-        sendToken(token);
+        sendRegistrationToken(token);
 
         return convert(saved);
     }
@@ -61,7 +61,7 @@ public class AuthorizationFacade {
                 .build());
     }
 
-    private void sendToken(ConfirmationToken token) {
+    private void sendRegistrationToken(ConfirmationToken token) {
         MailMessage msg = MailMessage.builder()
                 .addressee(token.getClient().getMail())
                 .header("Complete registration")
@@ -157,6 +157,15 @@ public class AuthorizationFacade {
                 .build();
 
         return tokenService.update(token);
+    }
+
+    private void sendToken(ConfirmationToken token) {
+        MailMessage msg = MailMessage.builder()
+                .addressee(token.getClient().getMail())
+                .header("Token")
+                .message("To confirm your account, please enter the code in the field: " + token.getToken())
+                .build();
+        mailSender.send(msg);
     }
 
     public void resetPassword(String mail) {
