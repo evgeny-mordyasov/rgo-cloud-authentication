@@ -9,10 +9,10 @@ module-properties:
       authCookieName: AUTH_TOKEN
       path: /
       expirationHours: 168
-      secret: ru.gold.ordance
+      secret: ENC(Nwp1GvkbpkREaG2TfYF4+hH5utLBtwniEwR6Q44Kc8ec7aKeUjKX8qX7+p7FVK0I)
   mail:
     sender: course.paper.asu@mail.ru
-    password: <secret>
+    password: ENC(LujfrqIT9whrt7nubYds+a68HP3but12b6b3GP0LKQ/jYDDN72WLardozRg4JBm8iiXqL+0KhahcyKWgttobXw==)
     host: smtp.mail.ru
     port: 465
     protocol: smtps
@@ -23,6 +23,11 @@ module-properties:
   persistence:
     url: jdbc:postgresql://common-db:5432/auth
     schema: auth
-    username: auth_appl
-    password: qwe123
+    username: ENC(cj8eVivlEFqzX8znKrxmrzdtfAQogOlVVLUDTQGz1mgVmDylOauzarQCD4oKaOlv)
+    password: ENC(LQRO6q1enT2hcVIDTopJw0S04KSLILQUhYr5aeTbsu1wJQ0v3YEuzxQNJfwu/22m)
     maxPoolSize: 10
+
+jasypt:
+  encryptor:
+    password: ${JASYPT-ENCRYPTOR-PWD}
+    pool-size: 5

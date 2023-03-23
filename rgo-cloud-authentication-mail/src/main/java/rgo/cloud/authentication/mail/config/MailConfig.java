@@ -18,6 +18,7 @@ import java.util.Properties;
 public class MailConfig {
 
     @Bean
+    @Profile("!test")
     public JavaMailSender javaMailSender(MailSenderProperties config) {
         JavaMailSenderImpl jms = new JavaMailSenderImpl();
         jms.setHost(config.host());

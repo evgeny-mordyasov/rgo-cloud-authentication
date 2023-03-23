@@ -14,10 +14,11 @@
 
     <properties>
         <spring.start-class>rgo.cloud.authentication.boot.Main</spring.start-class>
-
         <app.name>auth-app</app.name>
+
         <docker.username/>
         <docker.password/>
+        <jasypt-encryptor-password/>
     </properties>
 
     <dependencies>
@@ -74,6 +75,10 @@
         <!-- db -->
 
         <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
@@ -93,6 +98,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-maven-plugin</artifactId>
+                <version>${jasypt-plugin.version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -121,6 +131,11 @@
                             <password>${docker.password}</password>
                         </auth>
                     </to>
+                    <container>
+                        <environment>
+                            <JASYPT-ENCRYPTOR-PWD>${jasypt-encryptor-password}</JASYPT-ENCRYPTOR-PWD>
+                        </environment>
+                    </container>
                 </configuration>
                 <executions>
                     <execution>
