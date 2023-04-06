@@ -1,27 +1,35 @@
-package rgo.cloud.authentication.boot.storage.repository;
+package rgo.cloud.authentication.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import rgo.cloud.authentication.service.config.properties.TokenProperties;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
-import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.authentication.service.config.ServiceConfig;
+import rgo.cloud.authentication.service.config.TestServiceConfig;
+import rgo.cloud.common.spring.test.PersistenceTest;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomFullConfirmationToken;
+import static rgo.cloud.authentication.db.utils.EntityGenerator.*;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
 
-@SpringBootTest
 @ActiveProfiles("test")
-public class ConfirmationTokenRepositoryTest extends CommonTest {
+@Import(TestServiceConfig.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceConfig.class)
+public class ConfirmationTokenServiceTest extends PersistenceTest {
+
+    @Autowired
+    private ConfirmationTokenService service;
 
     @Autowired
     private ConfirmationTokenRepository tokenRepository;
@@ -29,19 +37,16 @@ public class ConfirmationTokenRepositoryTest extends CommonTest {
     @Autowired
     private ClientRepository clientRepository;
 
-    @Autowired
-    private TokenProperties config;
-
     @BeforeEach
     public void setUp() {
-       truncateTables();
+        truncateTables();
     }
 
     @Test
     public void findByClientIdAndToken_empty() {
         long fakeClientId = generateId();
 
-        Optional<ConfirmationToken> token = tokenRepository.findByClientId(fakeClientId);
+        Optional<ConfirmationToken> token = service.findByClientId(fakeClientId);
 
         assertTrue(token.isEmpty());
     }
@@ -49,9 +54,9 @@ public class ConfirmationTokenRepositoryTest extends CommonTest {
     @Test
     public void findByClientIdAndToken_present() {
         Client client = clientRepository.save(createRandomClient());
-        ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client, config.getTokenLength()));
+        ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client));
 
-        Optional<ConfirmationToken> found = tokenRepository.findByClientId(client.getEntityId());
+        Optional<ConfirmationToken> found = service.findByClientId(client.getEntityId());
 
         assertTrue(found.isPresent());
         assertEquals(saved.getEntityId(), found.get().getEntityId());
@@ -63,20 +68,19 @@ public class ConfirmationTokenRepositoryTest extends CommonTest {
     @Test
     public void save() {
         Client client = clientRepository.save(createRandomClient());
-        ConfirmationToken created = createRandomFullConfirmationToken(client, config.getTokenLength());
+        ConfirmationToken created = createRandomConfirmationToken(client);
 
-        ConfirmationToken saved = tokenRepository.save(created);
+        ConfirmationToken saved = service.save(created);
 
-        assertEquals(created.getToken(), saved.getToken());
         assertEquals(created.getClient().toString(), saved.getClient().toString());
     }
 
     @Test
     public void update() {
         Client client = clientRepository.save(createRandomClient());
-        ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client, config.getTokenLength()));
+        ConfirmationToken saved = tokenRepository.save(createRandomFullConfirmationToken(client));
 
-        ConfirmationToken updated = tokenRepository.update(createRandomFullConfirmationToken(client, config.getTokenLength()));
+        ConfirmationToken updated = service.update(createRandomFullConfirmationToken(client));
 
         assertNotEquals(updated.getToken(), saved.getToken());
         assertEquals(updated.getClient().toString(), saved.getClient().toString());

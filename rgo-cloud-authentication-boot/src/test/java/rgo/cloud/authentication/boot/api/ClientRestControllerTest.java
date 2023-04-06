@@ -10,7 +10,7 @@ import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.rest.api.client.request.ClientUpdateRequest;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.common.api.rest.StatusCode;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.WebTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import java.util.Optional;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
+import static rgo.cloud.authentication.db.utils.EntityGenerator.createRandomClient;
 import static rgo.cloud.common.api.util.JsonUtil.toJson;
 import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
@@ -29,7 +29,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 @SpringBootTest
 @WebAppConfiguration
 @ActiveProfiles("test")
-public class ClientRestControllerTest extends CommonTest {
+public class ClientRestControllerTest extends WebTest {
 
     @Autowired
     private ClientRepository clientRepository;

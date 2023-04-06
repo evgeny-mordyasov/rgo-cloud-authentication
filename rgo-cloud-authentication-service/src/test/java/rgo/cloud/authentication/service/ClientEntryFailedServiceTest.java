@@ -1,27 +1,34 @@
-package rgo.cloud.authentication.boot.service;
+package rgo.cloud.authentication.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import rgo.cloud.authentication.db.api.entity.ClientEntryFailed;
 import rgo.cloud.authentication.db.api.repository.ClientEntryFailedRepository;
-import rgo.cloud.authentication.service.ClientEntryFailedService;
+import rgo.cloud.authentication.service.config.ServiceConfig;
+import rgo.cloud.authentication.service.config.TestServiceConfig;
 import rgo.cloud.authentication.service.config.properties.ClientEntryFailedProperties;
-import rgo.cloud.common.api.exception.UnpredictableException;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.PersistenceTest;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClientEntryFailed;
+import static rgo.cloud.authentication.db.utils.EntityGenerator.createRandomClientEntryFailed;
 import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
-@SpringBootTest
 @ActiveProfiles("test")
-public class ClientEntryFailedServiceTest extends CommonTest {
+@Import(TestServiceConfig.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceConfig.class)
+@TestPropertySource(value = "classpath:application-test.properties")
+public class ClientEntryFailedServiceTest extends PersistenceTest {
 
     @Autowired
     private ClientEntryFailedService service;

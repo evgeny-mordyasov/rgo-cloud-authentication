@@ -1,30 +1,36 @@
-package rgo.cloud.authentication.boot.service;
+package rgo.cloud.authentication.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
-import rgo.cloud.authentication.service.ClientService;
+import rgo.cloud.authentication.service.config.ServiceConfig;
+import rgo.cloud.authentication.service.config.TestServiceConfig;
 import rgo.cloud.common.api.exception.EntityNotFoundException;
 import rgo.cloud.common.api.exception.ViolatesConstraintException;
 import rgo.cloud.common.api.model.Role;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.PersistenceTest;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static rgo.cloud.authentication.boot.EntityGenerator.createRandomClient;
+import static rgo.cloud.authentication.db.utils.EntityGenerator.createRandomClient;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
 import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 
-@SpringBootTest
 @ActiveProfiles("test")
-public class ClientServiceTest extends CommonTest {
+@Import(TestServiceConfig.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceConfig.class)
+public class ClientServiceTest extends PersistenceTest {
 
     @Autowired
     private ClientService service;

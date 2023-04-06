@@ -9,7 +9,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import rgo.cloud.authentication.db.api.entity.ClientEntryFailed;
 import rgo.cloud.authentication.db.api.repository.ClientEntryFailedRepository;
 import rgo.cloud.authentication.service.config.properties.ClientEntryFailedProperties;
-import rgo.cloud.authentication.service.config.properties.TokenProperties;
 import rgo.cloud.authentication.db.api.repository.ClientRepository;
 import rgo.cloud.authentication.db.api.repository.ConfirmationTokenRepository;
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignInRequest;
@@ -18,7 +17,7 @@ import rgo.cloud.authentication.db.api.entity.Client;
 import rgo.cloud.authentication.db.api.entity.ConfirmationToken;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.api.rest.StatusCode;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.WebTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import java.time.LocalDateTime;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static rgo.cloud.authentication.boot.EntityGenerator.*;
+import static rgo.cloud.authentication.db.utils.EntityGenerator.*;
 import static rgo.cloud.common.api.util.JsonUtil.toJson;
 import static rgo.cloud.common.spring.util.RequestUtil.JSON;
 import static rgo.cloud.common.spring.util.TestCommonUtil.generateId;
@@ -41,7 +40,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 @SpringBootTest
 @WebAppConfiguration
 @ActiveProfiles("test")
-public class AuthorizationRestControllerTest extends CommonTest {
+public class AuthorizationRestControllerTest extends WebTest {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -51,9 +50,6 @@ public class AuthorizationRestControllerTest extends CommonTest {
 
     @Autowired
     private ClientEntryFailedRepository clientEntryFailedRepository;
-
-    @Autowired
-    private TokenProperties config;
 
     @Autowired
     private ClientEntryFailedProperties properties;
@@ -289,7 +285,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
         String errorMessage = "The token is invalid.";
 
         Client savedClient = clientRepository.save(createRandomClient());
-        tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength()));
+        tokenRepository.save(createRandomFullConfirmationToken(savedClient));
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(savedClient.getEntityId()))
@@ -306,7 +302,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
                 .minusHours(1);
 
         Client savedClient = clientRepository.save(createRandomClient());
-        ConfirmationToken token = tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength(), expireDate));
+        ConfirmationToken token = tokenRepository.save(createRandomFullConfirmationToken(savedClient, expireDate));
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.CONFIRM_ACCOUNT)
                 .param("clientId", Long.toString(savedClient.getEntityId()))
@@ -319,7 +315,7 @@ public class AuthorizationRestControllerTest extends CommonTest {
     @Test
     public void sendToken() throws Exception {
         Client savedClient = clientRepository.save(createRandomClient());
-        ConfirmationToken savedToken = tokenRepository.save(createRandomFullConfirmationToken(savedClient, config.getTokenLength()));
+        ConfirmationToken savedToken = tokenRepository.save(createRandomFullConfirmationToken(savedClient));
 
         mvc.perform(multipart(Endpoint.Authorization.BASE_URL + Endpoint.Authorization.SEND_TOKEN)
                 .param("clientId", Long.toString(savedClient.getEntityId())))

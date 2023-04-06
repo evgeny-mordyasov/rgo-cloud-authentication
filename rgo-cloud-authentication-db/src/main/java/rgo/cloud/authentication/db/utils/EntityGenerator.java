@@ -1,4 +1,4 @@
-package rgo.cloud.authentication.boot;
+package rgo.cloud.authentication.db.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import rgo.cloud.authentication.db.api.entity.Client;
@@ -11,6 +11,8 @@ import java.time.ZoneOffset;
 import static rgo.cloud.common.spring.util.TestCommonUtil.*;
 
 public final class EntityGenerator {
+    private static final int TOKEN_LENGTH = 6;
+
     private EntityGenerator() {
     }
 
@@ -20,24 +22,24 @@ public final class EntityGenerator {
                 .build();
     }
 
-    public static ConfirmationToken createRandomFullConfirmationToken(Client client, int tokenLength) {
+    public static ConfirmationToken createRandomFullConfirmationToken(Client client) {
         return ConfirmationToken.builder()
-                .token(generateToken(tokenLength))
+                .token(generateToken())
                 .client(client)
                 .expiryDate(LocalDateTime.now(ZoneOffset.UTC))
                 .build();
     }
 
-    public static ConfirmationToken createRandomFullConfirmationToken(Client client, int tokenLength, LocalDateTime date) {
+    public static ConfirmationToken createRandomFullConfirmationToken(Client client, LocalDateTime date) {
         return ConfirmationToken.builder()
-                .token(generateToken(tokenLength))
+                .token(generateToken())
                 .client(client)
                 .expiryDate(date)
                 .build();
     }
 
-    private static String generateToken(int tokenLength) {
-        return RandomStringUtils.randomNumeric(tokenLength);
+    private static String generateToken() {
+        return RandomStringUtils.randomNumeric(TOKEN_LENGTH);
     }
 
     public static Client createRandomClient() {

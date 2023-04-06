@@ -12,7 +12,7 @@ import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSign
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.common.api.model.Role;
 import rgo.cloud.common.api.rest.StatusCode;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.WebTest;
 import rgo.cloud.security.config.domain.ClientDetails;
 import rgo.cloud.security.config.jwt.JwtProvider;
 import rgo.cloud.security.config.jwt.properties.JwtProperties;
@@ -35,7 +35,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 @SpringBootTest
 @WebAppConfiguration
 @ActiveProfiles("test")
-public class AuthorizationRestControllerPermitTest extends CommonTest {
+public class AuthorizationRestControllerPermitTest extends WebTest {
 
     @Autowired
     private JwtProvider jwtProvider;
@@ -47,7 +47,7 @@ public class AuthorizationRestControllerPermitTest extends CommonTest {
     private UserDetailsService userDetailsService;
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         truncateTables();
         initSecurityMvc();
     }

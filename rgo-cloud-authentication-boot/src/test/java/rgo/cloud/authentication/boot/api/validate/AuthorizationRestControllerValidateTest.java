@@ -8,7 +8,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignInRequest;
 import rgo.cloud.authentication.rest.api.authorization.request.AuthorizationSignUpRequest;
 import rgo.cloud.common.api.rest.StatusCode;
-import rgo.cloud.common.spring.test.CommonTest;
+import rgo.cloud.common.spring.test.WebTest;
 import rgo.cloud.security.config.util.Endpoint;
 
 import static org.hamcrest.Matchers.*;
@@ -24,7 +24,7 @@ import static rgo.cloud.common.spring.util.TestCommonUtil.randomString;
 @SpringBootTest
 @WebAppConfiguration
 @ActiveProfiles("test")
-public class AuthorizationRestControllerValidateTest extends CommonTest {
+public class AuthorizationRestControllerValidateTest extends WebTest {
 
     @BeforeEach
     public void setUp() {
